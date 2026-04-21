@@ -1,47 +1,42 @@
-import { describe, test, expect, vi } from 'vitest';
-import axios from 'axios';
-import { faker } from '@faker-js/faker';
+import { describe, test, expect, vi, type MockedFunction } from 'vitest';
+import type { AxiosStatic } from 'axios';
 
 import { AxiosHttpClient } from './axios-http-client';
-import type { HttpPostParams } from '@/data/protocols/http';
+import { mockAxios } from '@/infra/test';
+import { mockPostRequest } from '@/data/test/mock-http-post';
 
 vi.mock('axios');
 
-const mockedAxios = vi.mocked(axios);
-const mockedAxiosResult = {
-  data: { content: faker.string.alphanumeric()},
-  status: faker.number.int()
+type SutTypes = {
+  sut: AxiosHttpClient;
+  mockedAxios: MockedFunction<AxiosStatic>
 }
 
-mockedAxios.post.mockResolvedValue(mockedAxiosResult);
-
-const makeSut = (): AxiosHttpClient => {
-  return new AxiosHttpClient();
+const makeSut = (): SutTypes => {
+  return {
+   sut: new AxiosHttpClient(),
+   mockedAxios: mockAxios(),
+  }
 }
-
-const mockPostRequest = (): HttpPostParams<unknown> => ({
-  url: faker.internet.url(),
-  body: { test: faker.internet.exampleEmail() }
-})
 
 describe('AxiosHttpClient', () => {
   test('Should call axios with correct values', async() => { 
     const request = mockPostRequest();
-    const sut = makeSut();
+    const { sut, mockedAxios } = makeSut();
 
     await sut.post(request)
 
     expect(mockedAxios.post).toHaveBeenCalledWith(request.url, request.body);
   });
   
-  test('Should return the correct statusCode and body', async() => { 
-    const sut = makeSut();
+  test('Should return the correct statusCode and body', () => { 
+    const { sut, mockedAxios } = makeSut();
 
-    const httpResponse = await sut.post(mockPostRequest());
+    const httpResponse = sut.post(mockPostRequest());
 
-    expect(httpResponse).toEqual({
-      statusCode: mockedAxiosResult.status,
-      body: mockedAxiosResult.data
-    });
+    // Index 0 = resolved value / Index 1 = rejected value
+    const resolvedValue = mockedAxios.post.mock.results[0].value;
+
+    expect(httpResponse).toEqual(resolvedValue);
   });
 })
