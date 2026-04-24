@@ -1,6 +1,6 @@
 import type { JSX } from "react/jsx-dev-runtime";
-import logo4Dev from "@/presentation/assets/logo-4dev.svg";
-import { Spinner } from "@/presentation/components/Spinner/spinner";
+import { Logo } from "@/presentation/components/logo/logo";
+import { Spinner } from "@/presentation/components/spinner/spinner";
 
 export function LoginPage(): JSX.Element {
   return (
@@ -12,7 +12,7 @@ export function LoginPage(): JSX.Element {
           flex flex-col items-center
         "
       >
-        <img className="mt-10" src={logo4Dev} alt="Logo 4Dev"/>
+        <Logo />
 
         <h1 className="text-white mt-4 mb-10 mx-0">4Dev - Surveys for programmers</h1>
       </header>
