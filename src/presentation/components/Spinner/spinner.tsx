@@ -5,7 +5,7 @@ type SpinnerProps = {
   size?: number;
 };
 
-export function Spinner({ size = 24 }: SpinnerProps): JSX.Element {
+export default function Spinner({ size = 24 }: SpinnerProps): JSX.Element {
   return (
     <SpinnerGapIcon
       className="animate-spin text-primaryLight" 

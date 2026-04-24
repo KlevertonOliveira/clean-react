@@ -1,21 +1,13 @@
 import type { JSX } from "react/jsx-dev-runtime";
-import { Logo } from "@/presentation/components/logo/logo";
-import { Spinner } from "@/presentation/components/spinner/spinner";
+
+import Header from "@/presentation/pages/login/login-header";
+import Spinner from "@/presentation/components/spinner/spinner";
+import Footer from "../../components/footer/footer";
 
 export function LoginPage(): JSX.Element {
   return (
     <div className="h-screen flex flex-col justify-between">
-      
-      <header 
-        className="
-          bg-primary border-t-40 border-solid border-primaryDark
-          flex flex-col items-center
-        "
-      >
-        <Logo />
-
-        <h1 className="text-white mt-4 mb-10 mx-0">4Dev - Surveys for programmers</h1>
-      </header>
+      <Header />
 
       <form 
         className="flex flex-col w-100 bg-white p-10 rounded-lg self-center shadow-black/30 shadow-xs"
@@ -23,7 +15,6 @@ export function LoginPage(): JSX.Element {
         <h2 className="text-primaryDark text-center uppercase text-xl">
           Login
         </h2>
-
         
         <div className="flex gap-4 mt-4">
           <div className="flex items-center w-full relative">
@@ -68,7 +59,7 @@ export function LoginPage(): JSX.Element {
         <span className="mt-8 mx-auto">Error</span>
       </form>
 
-      <footer className="bg-primary h-12" />
+      <Footer />
     </div>
   )
 }
