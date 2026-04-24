@@ -1,8 +1,11 @@
 import type { JSX } from "react";
+import { LoginPage } from "./presentation/pages/login/login";
 
 function App(): JSX.Element {
   return (
-    <div>APP</div>
+    <>
+      <LoginPage />
+    </>
   )
 }
 
