@@ -16,6 +16,7 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.2.4",
     "axios": "^1.15.1",
     "react": "^19.2.4",
