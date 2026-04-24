@@ -2,7 +2,8 @@ import type { JSX } from "react/jsx-dev-runtime";
 
 import Header from "@/presentation/pages/login/login-header";
 import Spinner from "@/presentation/components/spinner/spinner";
-import Footer from "../../components/footer/footer";
+import Footer from "@/presentation/components/footer/footer";
+import Input from "@/presentation/components/input/input";
 
 export function LoginPage(): JSX.Element {
   return (
@@ -16,32 +17,22 @@ export function LoginPage(): JSX.Element {
           Login
         </h2>
         
-        <div className="flex gap-4 mt-4">
-          <div className="flex items-center w-full relative">
-            <input 
-              type="email" 
-              name="email" 
-              placeholder="Enter your email" 
-              className="w-full"
-            />
-            <span 
-              className="absolute right-2 w-3 h-3 rounded-full bg-red-500 cursor-help" 
-            />
-          </div>
+        <div className="mt-4">
+          <Input 
+            type="email" 
+            name="email" 
+            placeholder="Enter your email" 
+            className="w-full"
+          />
         </div>
         
-        <div className="flex gap-4 mt-4">
-          <div className="flex items-center w-full relative">
-            <input 
-              type="password" 
-              name="password" 
-              placeholder="Enter your password" 
-              className="w-full"
-            />
-            <span 
-              className="absolute right-2 w-3 h-3 rounded-full bg-red-500 cursor-help" 
-            />
-          </div>
+        <div className="mt-4">
+          <Input 
+            type="password" 
+            name="password" 
+            placeholder="Enter your password" 
+            className="w-full"
+          />
         </div>
 
         <button className="mt-8" type="submit">
