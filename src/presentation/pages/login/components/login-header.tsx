@@ -1,7 +1,7 @@
 import type { JSX } from "react/jsx-runtime";
 import { memo } from "react";
 
-import { Logo } from "../../components/logo/logo";
+import { Logo } from "@/presentation/components";
 
 function LoginHeader(): JSX.Element {
   return (

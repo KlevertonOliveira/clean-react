@@ -1,11 +1,9 @@
 import type { JSX } from "react/jsx-dev-runtime";
 
-import Header from "@/presentation/pages/login/login-header";
-import Spinner from "@/presentation/components/spinner/spinner";
-import Footer from "@/presentation/components/footer/footer";
-import Input from "@/presentation/components/input/input";
+import { Footer, Input, Spinner } from "@/presentation/components";
+import { Header } from "@/presentation/pages/login/components";
 
-export function LoginPage(): JSX.Element {
+export default function LoginPage(): JSX.Element {
   return (
     <div className="h-screen flex flex-col justify-between">
       <Header />

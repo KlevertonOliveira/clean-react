@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { LoginPage } from "./presentation/pages/login/login";
+import { LoginPage } from "@/presentation/pages";
 
 function App(): JSX.Element {
   return (
