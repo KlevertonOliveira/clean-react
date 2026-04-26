@@ -10,6 +10,7 @@ export default function Spinner({ size = 24 }: SpinnerProps): JSX.Element {
     <SpinnerGapIcon
       className="animate-spin text-primaryLight" 
       size={size}
+      data-testid="spinner"
     />
   );
 };
