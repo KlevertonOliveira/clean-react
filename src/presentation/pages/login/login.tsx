@@ -6,13 +6,21 @@ import { useState } from "react";
 
 type FormState = {
   isLoading: boolean;
-  errorMessage: string;
+  errors: {
+    form: string;
+    email: string;
+    password: string;
+  }
 }
 
 export default function LoginPage(): JSX.Element {
   const [state] = useState<FormState>({
     isLoading: false,
-    errorMessage: "",
+    errors: {
+      form: "",
+      email: "Required field",
+      password: "Required field",
+    }
   });
 
   return (
@@ -32,6 +40,7 @@ export default function LoginPage(): JSX.Element {
               name="email" 
               placeholder="Enter your email" 
               className="w-full"
+              errorMessage={state.errors.email}
             />
           </div>
           
@@ -41,6 +50,7 @@ export default function LoginPage(): JSX.Element {
               name="password" 
               placeholder="Enter your password" 
               className="w-full"
+              errorMessage={state.errors.password}
             />
           </div>
 
@@ -63,9 +73,9 @@ export default function LoginPage(): JSX.Element {
             </div>
           )}
           
-          {state.errorMessage && (
-            <span className="mt-8 mx-auto" data-testid="errorMessage">
-              {state.errorMessage}
+          {state.errors.form && (
+            <span className="mt-8 mx-auto" data-testid="formErrorMessage">
+              {state.errors.form}
             </span>
           )}
         </form>

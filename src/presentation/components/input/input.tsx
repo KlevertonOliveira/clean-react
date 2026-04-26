@@ -1,20 +1,30 @@
 import type { JSX } from "react/jsx-runtime";
 
-type Props = React.InputHTMLAttributes<HTMLInputElement>;
+type Props = React.InputHTMLAttributes<HTMLInputElement> & {
+  errorMessage?: string;
+} ;
 
-export default function Input(props: Props): JSX.Element {
+export default function Input({errorMessage, ...inputProps }: Props): JSX.Element {
   return (
     <div className="flex items-center gap-4 w-full relative">
-      <input {...props} />
+      <input {...inputProps} />
 
-      <Input.Status />
+      {errorMessage && (
+        <Input.Status 
+          data-testid={`${inputProps.name}-status`}
+          title={errorMessage}
+        />
+      )}
     </div>
   )
 }
 
-function Status(): JSX.Element {
+type StatusProps = React.HTMLAttributes<HTMLSpanElement>;
+
+function Status(props: StatusProps): JSX.Element {
   return (
-    <span 
+    <span
+      {...props}
       className="absolute right-2 w-3 h-3 rounded-full bg-red-500 cursor-help" 
     />
   )
