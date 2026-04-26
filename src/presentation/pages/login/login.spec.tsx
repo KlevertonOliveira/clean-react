@@ -16,4 +16,11 @@ describe('Login Component', () => {
     const errorMessage = screen.queryByTestId('errorMessage');
     expect(errorMessage).not.toBeInTheDocument();
   })
+  
+  test('should render submit button disabled initially', () => {
+    render(<LoginPage />);
+
+    const submitButton = screen.getByTestId('submit-button');
+    expect(submitButton).toBeDisabled()
+  })
  })
