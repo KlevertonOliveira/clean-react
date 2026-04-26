@@ -23,4 +23,23 @@ describe('Login Component', () => {
     const submitButton = screen.getByTestId('submit-button');
     expect(submitButton).toBeDisabled()
   })
+  
+  test('should render submit button disabled initially', () => {
+    render(<LoginPage />);
+
+    const submitButton = screen.getByTestId('submit-button');
+    expect(submitButton).toBeDisabled()
+  })
+  
+  test('should render error status for email and password inputs initially', () => {
+    render(<LoginPage />);
+
+    const emailInputStatus = screen.getByTestId('email-status');
+    expect(emailInputStatus).toBeInTheDocument();
+    expect(emailInputStatus).toHaveAttribute('title', 'Required field');
+    
+    const passwordInputStatus = screen.getByTestId('password-status');
+    expect(passwordInputStatus).toBeInTheDocument();
+    expect(emailInputStatus).toHaveAttribute('title', 'Required field');
+  })
  })
