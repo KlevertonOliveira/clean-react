@@ -44,8 +44,13 @@ export default function LoginPage(): JSX.Element {
             />
           </div>
 
-          <button className="mt-8" type="submit">
-              Login
+          <button 
+            className="mt-8"
+            type="submit"
+            data-testid="submit-button"
+            disabled
+          >
+            Login
           </button>
 
           <span className="text-center text-primary mt-4 cursor-pointer hover:underline">

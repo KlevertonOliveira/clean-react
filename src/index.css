@@ -7,6 +7,8 @@
   --color-primary: #880E4F;
   --color-primaryDark: #560027;
   --color-primaryLight: #BC477B;
+  --color-disabled-background: #ccc;
+  --color-disabled-text: #777;
 }
 
 :root {
@@ -40,6 +42,6 @@ body {
     border: none;
     cursor: pointer;
 
-    @apply hover:opacity-90;
+    @apply hover:opacity-90 disabled:bg-disabled-background disabled:text-disabled-text disabled:cursor-not-allowed disabled:hover:opacity-100;
   }
 }
