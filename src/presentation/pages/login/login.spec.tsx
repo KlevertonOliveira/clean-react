@@ -1,44 +1,56 @@
 import { describe, expect, test } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, type RenderResult } from "@testing-library/react";
 import LoginPage from "./login";
+
+type SutTypes = {
+  sut: RenderResult;
+}
+
+const makeSut = (): SutTypes => {
+  const sut = render(<LoginPage />);
+  
+  return {
+    sut
+  }
+}
 
 describe('Login Component', () => { 
   test('should not render loading spinner initially', () => {
-    render(<LoginPage />);
+    const { sut } = makeSut();
 
-    const spinner = screen.queryByTestId('spinner');
+    const spinner = sut.queryByTestId('spinner');
     expect(spinner).not.toBeInTheDocument();
   })
 
   test('should not render error message initially', () => {
-    render(<LoginPage />);
+    const { sut } = makeSut();
 
-    const errorMessage = screen.queryByTestId('errorMessage');
+    const errorMessage = sut.queryByTestId('errorMessage');
     expect(errorMessage).not.toBeInTheDocument();
   })
   
   test('should render submit button disabled initially', () => {
-    render(<LoginPage />);
+    const { sut } = makeSut();
 
-    const submitButton = screen.getByTestId('submit-button');
+    const submitButton = sut.getByTestId('submit-button');
     expect(submitButton).toBeDisabled()
   })
   
   test('should render submit button disabled initially', () => {
-    render(<LoginPage />);
+   const { sut } = makeSut();
 
-    const submitButton = screen.getByTestId('submit-button');
+    const submitButton = sut.getByTestId('submit-button');
     expect(submitButton).toBeDisabled()
   })
   
   test('should render error status for email and password inputs initially', () => {
-    render(<LoginPage />);
+    const { sut } = makeSut();
 
-    const emailInputStatus = screen.getByTestId('email-status');
+    const emailInputStatus = sut.getByTestId('email-status');
     expect(emailInputStatus).toBeInTheDocument();
     expect(emailInputStatus).toHaveAttribute('title', 'Required field');
     
-    const passwordInputStatus = screen.getByTestId('password-status');
+    const passwordInputStatus = sut.getByTestId('password-status');
     expect(passwordInputStatus).toBeInTheDocument();
     expect(emailInputStatus).toHaveAttribute('title', 'Required field');
   })
