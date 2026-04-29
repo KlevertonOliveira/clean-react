@@ -15,36 +15,17 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Login Component', () => { 
-  test('should not render loading spinner initially', () => {
+  test('Should start with initial state', () => {
     const { sut } = makeSut();
 
     const spinner = sut.queryByTestId('spinner');
     expect(spinner).not.toBeInTheDocument();
-  })
-
-  test('should not render error message initially', () => {
-    const { sut } = makeSut();
 
     const errorMessage = sut.queryByTestId('errorMessage');
     expect(errorMessage).not.toBeInTheDocument();
-  })
-  
-  test('should render submit button disabled initially', () => {
-    const { sut } = makeSut();
-
+    
     const submitButton = sut.getByTestId('submit-button');
     expect(submitButton).toBeDisabled()
-  })
-  
-  test('should render submit button disabled initially', () => {
-   const { sut } = makeSut();
-
-    const submitButton = sut.getByTestId('submit-button');
-    expect(submitButton).toBeDisabled()
-  })
-  
-  test('should render error status for email and password inputs initially', () => {
-    const { sut } = makeSut();
 
     const emailInputStatus = sut.getByTestId('email-status');
     expect(emailInputStatus).toBeInTheDocument();
