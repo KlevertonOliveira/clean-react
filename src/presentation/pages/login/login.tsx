@@ -2,10 +2,12 @@ import type { JSX } from "react/jsx-dev-runtime";
 
 import { Footer, Input, Spinner } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import type { Validation } from "@/presentation/protocols/validation";
 
 type FormState = {
   isLoading: boolean;
+  email: string;
   errors: {
     form: string;
     email: string;
@@ -13,15 +15,31 @@ type FormState = {
   }
 }
 
-export default function LoginPage(): JSX.Element {
-  const [state] = useState<FormState>({
+type Props = {
+  validation: Validation;
+}
+
+export default function LoginPage({ validation }: Props): JSX.Element {
+  const [state, setState] = useState<FormState>({
     isLoading: false,
+    email: "",
     errors: {
       form: "",
       email: "Required field",
       password: "Required field",
     }
   });
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement, Element>): void{
+    setState((prev) => ({
+      ...prev, 
+      [event.target.name]: event.target.value
+    }))
+  }
+
+  useEffect(() => {
+    validation.validate({ email: state.email })
+  }, [state.email])
 
   return (
     <div className="h-screen flex flex-col justify-between">
@@ -35,11 +53,12 @@ export default function LoginPage(): JSX.Element {
           </h2>
           
           <div className="mt-4">
-            <Input 
+            <Input
               type="email" 
               name="email" 
               placeholder="Enter your email" 
               className="w-full"
+              onChange={handleChange}
               errorMessage={state.errors.email}
             />
           </div>

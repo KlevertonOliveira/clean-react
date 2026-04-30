@@ -7,7 +7,7 @@ type Props = React.InputHTMLAttributes<HTMLInputElement> & {
 export default function Input({errorMessage, ...inputProps }: Props): JSX.Element {
   return (
     <div className="flex items-center gap-4 w-full relative">
-      <input {...inputProps} />
+      <input {...inputProps} data-testid={inputProps.name}/>
 
       {errorMessage && (
         <Input.Status 
