@@ -8,6 +8,7 @@ import type { Validation } from "@/presentation/protocols/validation";
 type FormState = {
   isLoading: boolean;
   email: string;
+  password: string;
   errors: {
     form: string;
     email: string;
@@ -23,6 +24,7 @@ export default function LoginPage({ validation }: Props): JSX.Element {
   const [state, setState] = useState<FormState>({
     isLoading: false,
     email: "",
+    password: "",
     errors: {
       form: "",
       email: "Required field",
@@ -40,6 +42,10 @@ export default function LoginPage({ validation }: Props): JSX.Element {
   useEffect(() => {
     validation.validate({ email: state.email })
   }, [state.email])
+  
+  useEffect(() => {
+    validation.validate({ password: state.password })
+  }, [state.password])
 
   return (
     <div className="h-screen flex flex-col justify-between">
@@ -69,6 +75,7 @@ export default function LoginPage({ validation }: Props): JSX.Element {
               name="password" 
               placeholder="Enter your password" 
               className="w-full"
+              onChange={handleChange}
               errorMessage={state.errors.password}
             />
           </div>
