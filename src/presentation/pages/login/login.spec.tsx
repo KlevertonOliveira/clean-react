@@ -78,4 +78,15 @@ describe('Login Component', () => {
     const emailStatus = sut.getByTestId('email-status');
     expect(emailStatus.title).toBe(validationSpy.errorMessage);
   })
+ 
+  test('Should show password error if Validation fails', async() => {
+    const { sut, validationSpy } = makeSut();
+    const user = userEvent.setup();
+
+    const passwordInput = sut.getByTestId('password');
+    await user.type(passwordInput, faker.internet.password());
+ 
+    const passwordStatus = sut.getByTestId('password-status');
+    expect(passwordStatus.title).toBe(validationSpy.errorMessage);
+  })
  })
