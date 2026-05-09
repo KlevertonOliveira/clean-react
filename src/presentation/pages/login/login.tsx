@@ -2,50 +2,53 @@ import type { JSX } from "react/jsx-dev-runtime";
 
 import { Footer, Input, Spinner } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
 
 type FormState = {
   isLoading: boolean;
-  email: string;
-  password: string;
-  errors: {
-    form: string;
+  fields: {
     email: string;
     password: string;
-  }
+  },
+  fieldErrors: {
+    email: string;
+    password: string;
+  },
+  formError: string;
 }
 
 type Props = {
   validation: Validation;
 }
 
-export default function LoginPage({ validation }: Props): JSX.Element {
+export default function LoginPage({ validation}: Props): JSX.Element {
   const [state, setState] = useState<FormState>({
     isLoading: false,
-    email: "",
-    password: "",
-    errors: {
-      form: "",
+    fields: {
+      email: "",
+      password: "",
+    },
+    fieldErrors: {
       email: "Required field",
       password: "Required field",
-    }
+    },
+    formError: "",
   });
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement, Element>): void{
+    const fieldName = event.target.name as keyof FormState["fields"];
+    const fieldValue = event.target.value;
+
     setState((prev) => ({
       ...prev, 
-      [event.target.name]: event.target.value
+      fields: { ...prev.fields, [fieldName]: fieldValue },
+      fieldErrors: {
+        ...prev.fieldErrors,
+        [fieldName]: validation.validate(fieldName, fieldValue),
+      },
     }))
   }
-
-  useEffect(() => {
-    validation.validate('email', state.email)
-  }, [state.email])
-  
-  useEffect(() => {
-    validation.validate('password', state.password)
-  }, [state.password])
 
   return (
     <div className="h-screen flex flex-col justify-between">
@@ -65,7 +68,7 @@ export default function LoginPage({ validation }: Props): JSX.Element {
               placeholder="Enter your email" 
               className="w-full"
               onChange={handleChange}
-              errorMessage={state.errors.email}
+              errorMessage={state.fieldErrors.email}
             />
           </div>
           
@@ -76,7 +79,7 @@ export default function LoginPage({ validation }: Props): JSX.Element {
               placeholder="Enter your password" 
               className="w-full"
               onChange={handleChange}
-              errorMessage={state.errors.password}
+              errorMessage={state.fieldErrors.password}
             />
           </div>
 
@@ -99,9 +102,9 @@ export default function LoginPage({ validation }: Props): JSX.Element {
             </div>
           )}
           
-          {state.errors.form && (
+          {state.formError && (
             <span className="mt-8 mx-auto" data-testid="formErrorMessage">
-              {state.errors.form}
+              {state.formError}
             </span>
           )}
         </form>
