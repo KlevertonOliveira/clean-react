@@ -11,7 +11,9 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const validationSpy = new ValidationSpy()
+  const validationSpy = new ValidationSpy();
+  validationSpy.errorMessage = faker.lorem.words();
+
   const sut = render(<LoginPage validation={validationSpy}/>);
   
   return {
@@ -33,13 +35,13 @@ describe('Login Component', () => {
     const submitButton = sut.getByTestId('submit-button');
     expect(submitButton).toBeDisabled()
 
-    const emailInputStatus = sut.getByTestId('email-status');
-    expect(emailInputStatus).toBeInTheDocument();
-    expect(emailInputStatus).toHaveAttribute('title', 'Required field');
+    const emailStatus = sut.getByTestId('email-status');
+    expect(emailStatus).toBeInTheDocument();
+    expect(emailStatus.title).toBe('Required field');
     
-    const passwordInputStatus = sut.getByTestId('password-status');
-    expect(passwordInputStatus).toBeInTheDocument();
-    expect(emailInputStatus).toHaveAttribute('title', 'Required field');
+    const passwordStatus = sut.getByTestId('password-status');
+    expect(passwordStatus).toBeInTheDocument();
+    expect(passwordStatus.title).toBe('Required field');
   });
 
   test('Should call Validation with correct email', async() => {
@@ -54,7 +56,6 @@ describe('Login Component', () => {
     expect(validationSpy.fieldValue).toBe(email);
   })
 
-
   test('Should call Validation with correct password', async() => {
     const { sut, validationSpy } = makeSut();
     const user = userEvent.setup();
@@ -65,5 +66,16 @@ describe('Login Component', () => {
     
     expect(validationSpy.fieldName).toBe('password');
     expect(validationSpy.fieldValue).toBe(password);
+  })
+
+  test('Should show email error if Validation fails', async() => {
+    const { sut, validationSpy } = makeSut();
+    const user = userEvent.setup();
+
+    const emailInput = sut.getByTestId('email');
+    await user.type(emailInput, faker.internet.email());
+ 
+    const emailStatus = sut.getByTestId('email-status');
+    expect(emailStatus.title).toBe(validationSpy.errorMessage);
   })
  })
