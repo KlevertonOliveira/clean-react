@@ -89,4 +89,28 @@ describe('Login Component', () => {
     const passwordStatus = sut.getByTestId('password-status');
     expect(passwordStatus.title).toBe(validationSpy.errorMessage);
   })
+  
+  test('Should show valid email state if Validation succeeds', async() => {
+    const { sut, validationSpy } = makeSut();
+    validationSpy.errorMessage = '';
+    
+    const emailInput = sut.getByTestId('email');
+    const user = userEvent.setup();
+    await user.type(emailInput, faker.internet.email());
+ 
+    const emailStatus = sut.getByTestId('email-status');
+    expect(emailStatus.title).toBe('');
+  })
+  
+  test('Should show valid password state if Validation succeeds', async() => {
+    const { sut, validationSpy } = makeSut();
+    validationSpy.errorMessage = '';
+    
+    const passwordInput = sut.getByTestId('password');
+    const user = userEvent.setup();
+    await user.type(passwordInput, faker.internet.password());
+ 
+    const passwordStatus = sut.getByTestId('password-status');
+    expect(passwordStatus.title).toBe('');
+  })
  })
