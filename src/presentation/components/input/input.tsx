@@ -9,12 +9,10 @@ export default function Input({errorMessage, ...inputProps }: Props): JSX.Elemen
     <div className="flex items-center gap-4 w-full relative">
       <input {...inputProps} data-testid={inputProps.name}/>
 
-      {errorMessage && (
-        <Input.Status 
-          data-testid={`${inputProps.name}-status`}
-          title={errorMessage}
-        />
-      )}
+      <Input.Status 
+        data-testid={`${inputProps.name}-status`}
+        title={errorMessage}
+      />
     </div>
   )
 }
@@ -25,7 +23,9 @@ function Status(props: StatusProps): JSX.Element {
   return (
     <span
       {...props}
-      className="absolute right-2 w-3 h-3 rounded-full bg-red-500 cursor-help" 
+      className={`absolute right-2 w-3 h-3 rounded-full 
+        ${ props.title ? 'cursor-help bg-red-500' : 'bg-green-500'}
+      `}
     />
   )
 }

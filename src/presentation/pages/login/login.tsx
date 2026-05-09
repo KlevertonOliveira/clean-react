@@ -22,7 +22,7 @@ type Props = {
   validation: Validation;
 }
 
-export default function LoginPage({ validation}: Props): JSX.Element {
+export default function LoginPage({ validation }: Props): JSX.Element {
   const [state, setState] = useState<FormState>({
     isLoading: false,
     fields: {
@@ -42,7 +42,10 @@ export default function LoginPage({ validation}: Props): JSX.Element {
 
     setState((prev) => ({
       ...prev, 
-      fields: { ...prev.fields, [fieldName]: fieldValue },
+      fields: { 
+        ...prev.fields, 
+        [fieldName]: fieldValue
+      },
       fieldErrors: {
         ...prev.fieldErrors,
         [fieldName]: validation.validate(fieldName, fieldValue),
