@@ -3,6 +3,7 @@ import { render, type RenderResult } from "@testing-library/react";
 import { userEvent } from '@testing-library/user-event'; 
 import LoginPage from "./login";
 import { ValidationSpy } from "@/presentation/test";
+import { faker } from '@faker-js/faker';
 
 type SutTypes = {
   sut: RenderResult;
@@ -45,11 +46,12 @@ describe('Login Component', () => {
     const { sut, validationSpy } = makeSut();
     const user = userEvent.setup();
 
+    const email = faker.internet.email();
     const emailInput = sut.getByTestId('email');
-    await user.type(emailInput, 'any_email');
+    await user.type(emailInput, email);
     
     expect(validationSpy.fieldName).toBe('email');
-    expect(validationSpy.fieldValue).toBe('any_email');
+    expect(validationSpy.fieldValue).toBe(email);
   })
 
 
@@ -57,10 +59,11 @@ describe('Login Component', () => {
     const { sut, validationSpy } = makeSut();
     const user = userEvent.setup();
 
+    const password = faker.internet.password();
     const passwordInput = sut.getByTestId('password');
-    await user.type(passwordInput, 'any_password');
+    await user.type(passwordInput, password);
     
     expect(validationSpy.fieldName).toBe('password');
-    expect(validationSpy.fieldValue).toBe('any_password');
+    expect(validationSpy.fieldValue).toBe(password);
   })
  })
