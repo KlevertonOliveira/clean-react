@@ -90,7 +90,7 @@ export default function LoginPage({ validation }: Props): JSX.Element {
             className="mt-8"
             type="submit"
             data-testid="submit-button"
-            disabled
+            disabled={Boolean(state.fieldErrors.email || state.fieldErrors.password)}
           >
             Login
           </button>
