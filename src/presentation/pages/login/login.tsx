@@ -53,12 +53,18 @@ export default function LoginPage({ validation }: Props): JSX.Element {
     }))
   }
 
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>): Promise<void>{
+    event.preventDefault();
+    setState((prev) => ({ ...prev, isLoading: true }));
+  }
+
   return (
     <div className="h-screen flex flex-col justify-between">
       <Header />
 
         <form 
           className="flex flex-col w-100 bg-white p-10 rounded-lg self-center shadow-black/30 shadow-xs"
+          onSubmit={handleSubmit}
         >
           <h2 className="text-primaryDark text-center uppercase text-xl">
             Login
