@@ -4,10 +4,24 @@ import { userEvent } from '@testing-library/user-event';
 import LoginPage from "./login";
 import { ValidationSpy } from "@/presentation/test";
 import { faker } from '@faker-js/faker';
+import type { Authentication, AuthenticationParams } from "@/domain/usecases";
+import type { AccountModel } from "@/domain/models";
+import { mockAccountModel } from "@/domain/test";
+
+class AuthenticationSpy implements Authentication {
+  account = mockAccountModel();
+  params!: AuthenticationParams;
+
+  async auth(params: AuthenticationParams): Promise<AccountModel> {
+    this.params = params;
+    return Promise.resolve(this.account);
+  }
+}
 
 type SutTypes = {
   sut: RenderResult;
   validationSpy: ValidationSpy;
+  authenticationSpy: AuthenticationSpy;
 }
 
 type SutParams = {
@@ -16,13 +30,20 @@ type SutParams = {
 
 const makeSut = (params?: SutParams): SutTypes => {
   const validationSpy = new ValidationSpy(); 
+  const authenticationSpy = new AuthenticationSpy(); 
   validationSpy.errorMessage = params?.validationError ?? '';
 
-  const sut = render(<LoginPage validation={validationSpy}/>);
+  const sut = render(
+    <LoginPage 
+      validation={validationSpy}
+      authentication={authenticationSpy}
+    />
+  );
   
   return {
     sut,
-    validationSpy
+    validationSpy,
+    authenticationSpy
   }
 }
 
@@ -152,5 +173,27 @@ describe('Login Component', () => {
 
     const spinner = sut.getByTestId('spinner');
     expect(spinner).toBeInTheDocument();
+  })
+  
+  test('Should call Authentication with correct credentials', async() => {
+    const { sut, authenticationSpy } = makeSut();
+    
+    const user = userEvent.setup();
+    
+    const email = faker.internet.email();
+    const emailInput = sut.getByTestId('email');
+    await user.type(emailInput, email);
+
+    const password = faker.internet.password();
+    const passwordInput = sut.getByTestId('password');
+    await user.type(passwordInput, password);
+
+    const submitButton = sut.getByTestId('submit-button');
+    await user.click(submitButton);
+
+    expect(authenticationSpy.params).toEqual({
+      email,
+      password
+    });
   })
  })
