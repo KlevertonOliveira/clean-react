@@ -135,4 +135,22 @@ describe('Login Component', () => {
     const submitButton = sut.getByTestId('submit-button');
     expect(submitButton).toBeEnabled();
   })
+  
+  test('Should show spinner on submit', async() => {
+    const { sut } = makeSut();
+    
+    const user = userEvent.setup();
+    
+    const emailInput = sut.getByTestId('email');
+    await user.type(emailInput, faker.internet.email());
+
+    const passwordInput = sut.getByTestId('password');
+    await user.type(passwordInput, faker.internet.password());
+
+    const submitButton = sut.getByTestId('submit-button');
+    await user.click(submitButton);
+
+    const spinner = sut.getByTestId('spinner');
+    expect(spinner).toBeInTheDocument();
+  })
  })
