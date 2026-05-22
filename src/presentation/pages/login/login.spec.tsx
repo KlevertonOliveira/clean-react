@@ -35,6 +35,38 @@ const makeSut = (params?: SutParams): SutTypes => {
   }
 }
 
+const fillEmailField = async(
+  sut: RenderResult, 
+  email = faker.internet.email()
+): Promise<void> => {
+  const user = userEvent.setup();
+  const emailInput = sut.getByTestId('email');
+  await user.type(emailInput, email);
+}
+
+const fillPasswordField = async(
+  sut: RenderResult, 
+  password = faker.internet.password()
+): Promise<void> => {
+  const user = userEvent.setup();
+  const passwordInput = sut.getByTestId('password');
+  await user.type(passwordInput, password);
+}
+
+const simulateValidSubmit = async(
+  sut: RenderResult,
+  email = faker.internet.email(),
+  password = faker.internet.password()
+): Promise<void> => {
+  const user = userEvent.setup();
+    
+  await fillEmailField(sut, email);
+  await fillPasswordField(sut, password);
+
+  const submitButton = sut.getByTestId('submit-button');
+  await user.click(submitButton);
+}
+
 describe('Login Component', () => { 
   test('Should start with initial state', () => {
     const validationError = faker.lorem.words();
@@ -60,11 +92,9 @@ describe('Login Component', () => {
 
   test('Should call Validation with correct email', async() => {
     const { sut, validationSpy } = makeSut();
-    const user = userEvent.setup();
 
     const email = faker.internet.email();
-    const emailInput = sut.getByTestId('email');
-    await user.type(emailInput, email);
+    await fillEmailField(sut, email);
     
     expect(validationSpy.fieldName).toBe('email');
     expect(validationSpy.fieldValue).toBe(email);
@@ -72,11 +102,9 @@ describe('Login Component', () => {
 
   test('Should call Validation with correct password', async() => {
     const { sut, validationSpy } = makeSut();
-    const user = userEvent.setup();
 
     const password = faker.internet.password();
-    const passwordInput = sut.getByTestId('password');
-    await user.type(passwordInput, password);
+    await fillPasswordField(sut, password);
     
     expect(validationSpy.fieldName).toBe('password');
     expect(validationSpy.fieldValue).toBe(password);
@@ -86,10 +114,7 @@ describe('Login Component', () => {
     const validationError = faker.lorem.words();
     const { sut } = makeSut({ validationError });
 
-    const user = userEvent.setup();
-
-    const emailInput = sut.getByTestId('email');
-    await user.type(emailInput, faker.internet.email());
+    await fillEmailField(sut);
  
     const emailStatus = sut.getByTestId('email-status');
     expect(emailStatus.title).toBe(validationError);
@@ -98,12 +123,9 @@ describe('Login Component', () => {
   test('Should show password error if Validation fails', async() => {
     const validationError = faker.lorem.words();
     const { sut } = makeSut({ validationError });
+    
+    await fillPasswordField(sut);
 
-    const user = userEvent.setup();
-
-    const passwordInput = sut.getByTestId('password');
-    await user.type(passwordInput, faker.internet.password());
- 
     const passwordStatus = sut.getByTestId('password-status');
     expect(passwordStatus.title).toBe(validationError);
   })
@@ -111,9 +133,7 @@ describe('Login Component', () => {
   test('Should show valid email state if Validation succeeds', async() => {
     const { sut } = makeSut();
     
-    const user = userEvent.setup();
-    const emailInput = sut.getByTestId('email');
-    await user.type(emailInput, faker.internet.email());
+    await fillEmailField(sut);
  
     const emailStatus = sut.getByTestId('email-status');
     expect(emailStatus.title).toBe('');
@@ -121,10 +141,8 @@ describe('Login Component', () => {
   
   test('Should show valid password state if Validation succeeds', async() => {
     const { sut } = makeSut();
-    
-    const passwordInput = sut.getByTestId('password');
-    const user = userEvent.setup();
-    await user.type(passwordInput, faker.internet.password());
+   
+    await fillPasswordField(sut);
  
     const passwordStatus = sut.getByTestId('password-status');
     expect(passwordStatus.title).toBe('');
@@ -133,13 +151,8 @@ describe('Login Component', () => {
   test('Should enable submit button if form is valid', async() => {
     const { sut } = makeSut();
     
-    const user = userEvent.setup();
-    
-    const emailInput = sut.getByTestId('email');
-    await user.type(emailInput, faker.internet.email());
-
-    const passwordInput = sut.getByTestId('password');
-    await user.type(passwordInput, faker.internet.password());
+    await fillEmailField(sut);
+    await fillPasswordField(sut);
 
     const submitButton = sut.getByTestId('submit-button');
     expect(submitButton).toBeEnabled();
@@ -148,16 +161,7 @@ describe('Login Component', () => {
   test('Should show spinner on submit', async() => {
     const { sut } = makeSut();
     
-    const user = userEvent.setup();
-    
-    const emailInput = sut.getByTestId('email');
-    await user.type(emailInput, faker.internet.email());
-
-    const passwordInput = sut.getByTestId('password');
-    await user.type(passwordInput, faker.internet.password());
-
-    const submitButton = sut.getByTestId('submit-button');
-    await user.click(submitButton);
+    await simulateValidSubmit(sut);
 
     const spinner = sut.getByTestId('spinner');
     expect(spinner).toBeInTheDocument();
@@ -165,23 +169,12 @@ describe('Login Component', () => {
   
   test('Should call Authentication with correct credentials', async() => {
     const { sut, authenticationSpy } = makeSut();
-    
-    const user = userEvent.setup();
-    
+
     const email = faker.internet.email();
-    const emailInput = sut.getByTestId('email');
-    await user.type(emailInput, email);
-
     const password = faker.internet.password();
-    const passwordInput = sut.getByTestId('password');
-    await user.type(passwordInput, password);
 
-    const submitButton = sut.getByTestId('submit-button');
-    await user.click(submitButton);
+    await simulateValidSubmit(sut, email, password);
 
-    expect(authenticationSpy.params).toEqual({
-      email,
-      password
-    });
+    expect(authenticationSpy.params).toEqual({ email, password });
   })
  })
