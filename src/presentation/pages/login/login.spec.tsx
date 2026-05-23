@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { render, type RenderResult } from "@testing-library/react";
+import { render, type RenderResult, cleanup } from "@testing-library/react";
 import { userEvent } from '@testing-library/user-event'; 
 import LoginPage from "./login";
 import { ValidationSpy } from "@/presentation/test";
@@ -69,6 +69,9 @@ const simulateValidSubmit = async(
 }
 
 describe('Login Component', () => { 
+  afterEach(cleanup);
+  beforeEach(() => localStorage.clear());
+
   test('Should start with initial state', () => {
     const validationError = faker.lorem.words();
     const { sut } = makeSut({ validationError });
@@ -212,5 +215,16 @@ describe('Login Component', () => {
     const formErrorMessage = sut.getByTestId('formErrorMessage');
     expect(formErrorMessage).toBeInTheDocument();
     expect(formErrorMessage).toHaveTextContent(error.message);
+  })
+  
+  test('Should add accessToken to localStorage on Authentication success', async() => {
+    const { sut, authenticationSpy } = makeSut();
+
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+    
+    await simulateValidSubmit(sut);
+
+    expect(setItemSpy)
+      .toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken);
   })
  })
