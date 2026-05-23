@@ -58,13 +58,20 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>): Promise<void>{
     event.preventDefault();
 
-    if(state.isLoading || state.fieldErrors.email || state.fieldErrors.password) {
-      return
-    };
-
-    setState((prev) => ({ ...prev, isLoading: true }));
-
-    await authentication.auth(state.fields);
+    try {
+      if(state.isLoading || state.fieldErrors.email || state.fieldErrors.password) {
+        return
+      };
+  
+      setState((prev) => ({ ...prev, isLoading: true }));
+  
+      await authentication.auth(state.fields);
+    }
+    catch(error) {
+      setState((prev) => ({
+        ...prev, formError: (error as Error).message, isLoading: false })
+      );
+    }
   }
 
   return (
