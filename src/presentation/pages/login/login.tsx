@@ -65,7 +65,8 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
   
       setState((prev) => ({ ...prev, isLoading: true }));
   
-      await authentication.auth(state.fields);
+      const account = await authentication.auth(state.fields);
+      localStorage.setItem('accessToken', account.accessToken);
     }
     catch(error) {
       setState((prev) => ({
