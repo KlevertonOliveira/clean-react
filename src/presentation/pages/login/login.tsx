@@ -58,7 +58,7 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>): Promise<void>{
     event.preventDefault();
 
-    if(state.isLoading) {
+    if(state.isLoading || state.fieldErrors.email || state.fieldErrors.password) {
       return
     };
 
@@ -74,6 +74,7 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
         <form 
           className="flex flex-col w-100 bg-white p-10 rounded-lg self-center shadow-black/30 shadow-xs"
           onSubmit={handleSubmit}
+          data-testid="login-form"
         >
           <h2 className="text-primaryDark text-center uppercase text-xl">
             Login
