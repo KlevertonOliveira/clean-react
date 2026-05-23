@@ -5,6 +5,7 @@ import LoginPage from "./login";
 import { ValidationSpy } from "@/presentation/test";
 import { faker } from '@faker-js/faker';
 import { AuthenticationSpy } from "@/presentation/test/mock-authentication";
+import { InvalidCredentialsError } from "@/domain/errors";
 
 type SutTypes = {
   sut: RenderResult;
@@ -198,5 +199,18 @@ describe('Login Component', () => {
     await user.click(submitButton);
 
     expect(authenticationSpy.callsCount).toBe(0);
+  })
+  
+  test('Should present errors if Authentication fails', async() => {
+    const { sut, authenticationSpy } = makeSut();
+    
+    const error = new InvalidCredentialsError();
+    vi.spyOn(authenticationSpy, 'auth').mockRejectedValue(error);
+
+    await simulateValidSubmit(sut);
+
+    const formErrorMessage = sut.getByTestId('formErrorMessage');
+    expect(formErrorMessage).toBeInTheDocument();
+    expect(formErrorMessage).toHaveTextContent(error.message);
   })
  })
