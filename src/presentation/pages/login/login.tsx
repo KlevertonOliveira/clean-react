@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
 import type { Authentication } from "@/domain/usecases";
 import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 type FormState = {
   isLoading: boolean;
@@ -26,6 +27,8 @@ type Props = {
 }
 
 export default function LoginPage({ validation, authentication }: Props): JSX.Element {
+  const navigate = useNavigate();
+
   const [state, setState] = useState<FormState>({
     isLoading: false,
     fields: {
@@ -68,6 +71,7 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
   
       const account = await authentication.auth(state.fields);
       localStorage.setItem('accessToken', account.accessToken);
+      navigate({ to: '/' });
     }
     catch(error) {
       setState((prev) => ({
