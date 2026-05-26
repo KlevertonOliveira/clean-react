@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+ import { describe, expect, test } from "vitest";
 import { render, type RenderResult, cleanup } from "@testing-library/react";
 import { userEvent } from '@testing-library/user-event'; 
 import LoginPage from "./login";
@@ -6,11 +6,14 @@ import { ValidationSpy } from "@/presentation/test";
 import { faker } from '@faker-js/faker';
 import { AuthenticationSpy } from "@/presentation/test/mock-authentication";
 import { InvalidCredentialsError } from "@/domain/errors";
+import { RouterProvider } from "@tanstack/react-router";
+import { generateTestRouter } from "@/utils/test/test-router-utils";
 
 type SutTypes = {
   sut: RenderResult;
   validationSpy: ValidationSpy;
   authenticationSpy: AuthenticationSpy;
+  router: ReturnType<typeof generateTestRouter>;
 }
 
 type SutParams = {
@@ -22,17 +25,23 @@ const makeSut = (params?: SutParams): SutTypes => {
   const authenticationSpy = new AuthenticationSpy(); 
   validationSpy.errorMessage = params?.validationError ?? '';
 
-  const sut = render(
-    <LoginPage 
-      validation={validationSpy}
-      authentication={authenticationSpy}
-    />
-  );
-  
+  const router = generateTestRouter({
+    initialLocation: '/login',
+    rootRoutecomponent: (
+      <LoginPage 
+        validation={validationSpy}
+        authentication={authenticationSpy}
+      />
+    )
+  });
+
+  const sut = render(<RouterProvider router={router} />);
+
   return {
     sut,
     validationSpy,
-    authenticationSpy
+    authenticationSpy,
+    router
   }
 }
 
@@ -72,9 +81,10 @@ describe('Login Component', () => {
   afterEach(cleanup);
   beforeEach(() => localStorage.clear());
 
-  test('Should start with initial state', () => {
+  test('Should start with initial state', async() => {
     const validationError = faker.lorem.words();
     const { sut } = makeSut({ validationError });
+    await sut.findByTestId('login-form');
      
     const spinner = sut.queryByTestId('spinner');
     expect(spinner).not.toBeInTheDocument();
@@ -96,6 +106,7 @@ describe('Login Component', () => {
 
   test('Should call Validation with correct email', async() => {
     const { sut, validationSpy } = makeSut();
+    await sut.findByTestId('login-form');
 
     const email = faker.internet.email();
     await fillEmailField(sut, email);
@@ -106,6 +117,7 @@ describe('Login Component', () => {
 
   test('Should call Validation with correct password', async() => {
     const { sut, validationSpy } = makeSut();
+    await sut.findByTestId('login-form');
 
     const password = faker.internet.password();
     await fillPasswordField(sut, password);
@@ -117,6 +129,7 @@ describe('Login Component', () => {
   test('Should show email error if Validation fails', async() => {
     const validationError = faker.lorem.words();
     const { sut } = makeSut({ validationError });
+    await sut.findByTestId('login-form');
 
     await fillEmailField(sut);
  
@@ -127,6 +140,7 @@ describe('Login Component', () => {
   test('Should show password error if Validation fails', async() => {
     const validationError = faker.lorem.words();
     const { sut } = makeSut({ validationError });
+    await sut.findByTestId('login-form');
     
     await fillPasswordField(sut);
 
@@ -136,6 +150,7 @@ describe('Login Component', () => {
   
   test('Should show valid email state if Validation succeeds', async() => {
     const { sut } = makeSut();
+    await sut.findByTestId('login-form');
     
     await fillEmailField(sut);
  
@@ -145,6 +160,7 @@ describe('Login Component', () => {
   
   test('Should show valid password state if Validation succeeds', async() => {
     const { sut } = makeSut();
+    await sut.findByTestId('login-form');
    
     await fillPasswordField(sut);
  
@@ -154,6 +170,7 @@ describe('Login Component', () => {
   
   test('Should enable submit button if form is valid', async() => {
     const { sut } = makeSut();
+    await sut.findByTestId('login-form');
     
     await fillEmailField(sut);
     await fillPasswordField(sut);
@@ -164,6 +181,7 @@ describe('Login Component', () => {
   
   test('Should show spinner on submit', async() => {
     const { sut } = makeSut();
+    await sut.findByTestId('login-form');
     
     await simulateValidSubmit(sut);
 
@@ -173,6 +191,7 @@ describe('Login Component', () => {
   
   test('Should call Authentication with correct credentials', async() => {
     const { sut, authenticationSpy } = makeSut();
+    await sut.findByTestId('login-form');
 
     const email = faker.internet.email();
     const password = faker.internet.password();
@@ -184,6 +203,7 @@ describe('Login Component', () => {
   
   test('Should call Authentication only once', async() => {
     const { sut, authenticationSpy } = makeSut();
+    await sut.findByTestId('login-form');
 
     await simulateValidSubmit(sut);
     await simulateValidSubmit(sut);
@@ -194,6 +214,7 @@ describe('Login Component', () => {
   test('Should not call Authentication if form is invalid', async() => {
     const validationError = faker.lorem.words();
     const { sut, authenticationSpy } = makeSut({ validationError });
+    await sut.findByTestId('login-form');
     
     await fillEmailField(sut);
     
@@ -206,6 +227,7 @@ describe('Login Component', () => {
   
   test('Should present errors if Authentication fails', async() => {
     const { sut, authenticationSpy } = makeSut();
+    await sut.findByTestId('login-form');
     
     const error = new InvalidCredentialsError();
     vi.spyOn(authenticationSpy, 'auth').mockRejectedValue(error);
@@ -219,12 +241,23 @@ describe('Login Component', () => {
   
   test('Should add accessToken to localStorage on Authentication success', async() => {
     const { sut, authenticationSpy } = makeSut();
-
+    await sut.findByTestId('login-form');
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
     
     await simulateValidSubmit(sut);
 
     expect(setItemSpy)
       .toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken);
+  })
+
+  test('Should redirect to /signup upon Link interaction', async() => {
+    const { sut, router } = makeSut();
+    const user = userEvent.setup();
+    await sut.findByTestId('login-form');
+
+    const signupLink = sut.getByTestId('signup-link');
+    await user.click(signupLink);
+
+    expect(router.state.location.pathname).toBe('/signup');
   })
  })
