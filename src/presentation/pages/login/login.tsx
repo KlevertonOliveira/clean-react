@@ -5,6 +5,7 @@ import { Header } from "@/presentation/pages/login/components";
 import React, { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
 import type { Authentication } from "@/domain/usecases";
+import { Link } from "@tanstack/react-router";
 
 type FormState = {
   isLoading: boolean;
@@ -119,9 +120,13 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
             Login
           </button>
 
-          <span className="text-center text-primary mt-4 cursor-pointer hover:underline">
+          <Link
+            className="text-center text-primary mt-4 cursor-pointer hover:underline"
+            data-testid='signup-link'
+            to='/signup'
+          >
             Create account
-          </span>
+          </Link>
 
           {state.isLoading && (
             <div className="mt-8 mx-auto">
