@@ -260,4 +260,13 @@ describe('Login Component', () => {
 
     expect(router.state.location.pathname).toBe('/signup');
   })
+  
+  test('Should navigate to main page on authentication success', async() => {
+    const { sut, router } = makeSut();
+    await sut.findByTestId('login-form');
+
+    await simulateValidSubmit(sut);
+
+    expect(router.state.location.pathname).toBe('/');
+  })
  })
