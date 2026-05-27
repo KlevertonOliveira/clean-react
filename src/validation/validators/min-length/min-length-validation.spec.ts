@@ -7,4 +7,10 @@ describe('MinLengthValidation', () => {
     const error = sut.validate('123');
     expect(error).toEqual(new InvalidSizeError());
   })
+  
+  test('Should return null when value length is valid', () => {
+    const sut = new MinLengthValidation('field', 8);
+    const error = sut.validate('12345678');
+    expect(error).toBeNull();
+  })
  })
