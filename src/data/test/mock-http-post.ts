@@ -1,7 +1,11 @@
 import { faker } from '@faker-js/faker';
 import type { HttpPostParams } from '../protocols/http';
+import type { AuthenticationParams } from "@/domain/usecases";
 
-export const mockPostRequest = (): HttpPostParams<unknown> => ({
+export const mockPostRequest = (): HttpPostParams<AuthenticationParams> => ({
   url: faker.internet.url(),
-  body: { test: faker.internet.exampleEmail() }
+  body: { 
+    email: faker.internet.exampleEmail(),
+    password: faker.internet.password(), 
+  }
 })
