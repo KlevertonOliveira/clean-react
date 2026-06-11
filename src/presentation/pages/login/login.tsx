@@ -63,10 +63,6 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
     event.preventDefault();
 
     try {
-      if(state.isLoading || state.fieldErrors.email || state.fieldErrors.password) {
-        return
-      };
-  
       setState((prev) => ({ ...prev, isLoading: true }));
   
       const account = await authentication.auth(state.fields);
@@ -119,7 +115,8 @@ export default function LoginPage({ validation, authentication }: Props): JSX.El
             className="mt-8"
             type="submit"
             data-testid="submit-button"
-            disabled={Boolean(state.fieldErrors.email || state.fieldErrors.password)}
+            disabled={state.isLoading ||
+              Boolean(state.fieldErrors.email || state.fieldErrors.password)}
           >
             Login
           </button>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { FieldValidation } from "@/validation/protocols/field-validation";
 
 export class FieldValidationSpy implements FieldValidation {
@@ -6,6 +7,6 @@ export class FieldValidationSpy implements FieldValidation {
   constructor(readonly field: string) {}
 
   validate(value: string): Error | null {
-    return !value ? null : this.error;
+    return this.error;
   }
 }

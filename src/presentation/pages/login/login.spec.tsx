@@ -1,7 +1,7 @@
  import { describe, expect, test } from "vitest";
 import { render, type RenderResult, cleanup } from "@testing-library/react";
 import { userEvent } from '@testing-library/user-event'; 
-import LoginPage from "./login";
+import { LoginPage } from "@/presentation/pages";
 import { ValidationSpy } from "@/presentation/test";
 import { faker } from '@faker-js/faker';
 import { AuthenticationSpy } from "@/presentation/test/mock-authentication";
