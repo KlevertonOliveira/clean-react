@@ -1,7 +1,8 @@
 {
   "name": "clean-react-vite",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.1",
+  "description": "System in ReactJs using Typescript, TDD, Clean Architecture, Design Patterns and SOLID principles.",
+  "author": "Kleverton Oliveira",
   "type": "module",
   "scripts": {
     "dev": "vite",
