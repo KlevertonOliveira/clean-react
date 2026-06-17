@@ -44,6 +44,11 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     rules: {
       "no-unused-vars": "off",
       "no-undef": "off",
