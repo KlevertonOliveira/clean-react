@@ -1,0 +1,39 @@
+image: node:18-alpine
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - test
+  - build
+  - deploy
+
+test:
+  stage: test
+  script:
+    - npx eslint 'src/**'
+    - npm run test:ci
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 day
+
+pages:
+  stage: deploy
+  script:
+    - ls -la build/
+    - mkdir -p public
+    - cp -r build/* public/
+    - ls -la public/
+  artifacts:
+    paths:
+      - public/
+  only:
+    - main
