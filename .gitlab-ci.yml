@@ -1,4 +1,4 @@
-image: node:18-alpine
+image: node:22-alpine
 
 cache:
   paths:
@@ -12,12 +12,14 @@ stages:
 test:
   stage: test
   script:
+    - npm install
     - npx eslint 'src/**'
     - npm run test:ci
 
 build:
   stage: build
   script:
+    - npm install
     - npm ci
     - npm run build
   artifacts:
