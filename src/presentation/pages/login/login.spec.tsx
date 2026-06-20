@@ -253,6 +253,20 @@ describe('Login Component', () => {
     );
   });
 
+  test('Should present error if SaveAccessToken fails', async () => {
+    const { sut, saveAccessTokenMock } = makeSut();
+    await sut.findByTestId('login-form');
+
+    const error = new Error('Something went wrong!');
+    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValue(error);
+
+    await simulateValidSubmit(sut);
+
+    const formErrorMessage = sut.getByTestId('formErrorMessage');
+    expect(formErrorMessage).toBeInTheDocument();
+    expect(formErrorMessage).toHaveTextContent(error.message);
+  });
+
   test('Should redirect to /signup upon Link interaction', async () => {
     const { sut, router } = makeSut();
     const user = userEvent.setup();
