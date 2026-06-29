@@ -2,6 +2,7 @@ import { cleanup, render, type RenderResult } from "@testing-library/react";
 import SignUpPage from "./signup";
 import { Helper, ValidationSpy } from "@/presentation/test";
 import { faker } from "@faker-js/faker";
+import userEvent from "@testing-library/user-event";
 
 type SutTypes = {
   sut: RenderResult;
@@ -20,6 +21,23 @@ const makeSut = (params?: SutParams): SutTypes => {
   return {
     sut,
   };
+};
+
+const simulateValidSubmit = async (sut: RenderResult) => {
+  const name = faker.lorem.word();
+  const email = faker.internet.email();
+  const password = faker.internet.password();
+
+  await Helper.populateField(sut, "name", name);
+  await Helper.populateField(sut, "email", email);
+  await Helper.populateField(sut, "password", password);
+  await Helper.populateField(sut, "confirmPassword", password);
+
+  const submitButton = sut.getByTestId("submit-button");
+  expect(submitButton).toBeEnabled();
+
+  const user = userEvent.setup();
+  await user.click(submitButton);
 };
 
 describe("SignUpPage", () => {
@@ -144,5 +162,18 @@ describe("SignUpPage", () => {
     await Helper.populateField(sut, "confirmPassword", password);
 
     expect(sut.getByTestId('submit-button')).toBeEnabled();
+  });
+
+  test('Should show spinner on submit', async () => {
+    const { sut } = makeSut();
+    await sut.findByTestId('signup-form');
+
+    await simulateValidSubmit(sut);
+
+    const submitButton = sut.getByTestId("submit-button");
+    expect(submitButton).toBeDisabled();
+
+    const spinner = sut.getByTestId("spinner");
+    expect(spinner).toBeInTheDocument();
   });
 });
