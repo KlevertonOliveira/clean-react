@@ -1,8 +1,7 @@
 import { cleanup, render, type RenderResult } from "@testing-library/react";
 import SignUpPage from "./signup";
-import { ValidationSpy } from "@/presentation/test";
+import { Helper, ValidationSpy } from "@/presentation/test";
 import { faker } from "@faker-js/faker";
-import userEvent from "@testing-library/user-event";
 
 type SutTypes = {
   sut: RenderResult;
@@ -21,26 +20,6 @@ const makeSut = (params?: SutParams): SutTypes => {
   return {
     sut,
   };
-};
-
-const populateField = async (
-  sut: RenderResult,
-  fieldName: string,
-  value = faker.lorem.word()
-): Promise<void> => {
-  const user = userEvent.setup();
-  const fieldInput = sut.getByTestId(fieldName);
-  await user.type(fieldInput, value);
-};
-
-const testStatusForField = (
-  sut: RenderResult,
-  field: string,
-  validationError: string,
-) => {
-  const fieldStatus = sut.getByTestId(field + '-status');
-  expect(fieldStatus).toBeInTheDocument();
-  expect(fieldStatus.title).toBe(validationError);
 };
 
 describe("Login Component", () => {
@@ -63,7 +42,7 @@ describe("Login Component", () => {
     const fields = ["name", "email", "password", "confirm-password"];
 
     for (const field of fields) {
-      testStatusForField(sut, field, validationError);
+      Helper.testStatusForField(sut, field, validationError);
     }
   });
 
@@ -74,7 +53,7 @@ describe("Login Component", () => {
     const { sut } = makeSut({ validationError });
     await sut.findByTestId("signup-form");
 
-    await populateField(sut, field);
-    testStatusForField(sut, field, validationError);
+    await Helper.populateField(sut, field);
+    Helper.testStatusForField(sut, field, validationError);
   });
 });
