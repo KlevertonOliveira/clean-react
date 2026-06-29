@@ -24,13 +24,16 @@ body {
 }
 
 @layer base {
-  input[type="password"], input[type="email"] {
+
+  input[type="password"],
+  input[type="email"],
+  input[type="text"] {
     border: 1px solid var(--color-primaryLight);
     line-height: 2.5rem;
     border-radius: 4px;
     padding: 0 2.5rem 0 0.5rem;
 
-   @apply ring-primaryLight focus:outline-none focus:ring;
+    @apply ring-primaryLight focus:outline-none focus:ring;
   }
 
   button {
