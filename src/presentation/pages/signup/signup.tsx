@@ -112,10 +112,10 @@ export default function SignUpPage({ validation }: Props): JSX.Element {
         <div className="mt-4">
           <Input
             type="password"
-            name="confirm-password"
+            name="confirmPassword"
             placeholder="Confirm password"
             className="w-full"
-            onChange={() => { }}
+            onChange={handleChange}
             errorMessage={state.fieldErrors.confirmPassword}
           />
         </div>
