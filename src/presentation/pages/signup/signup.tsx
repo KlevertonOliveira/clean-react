@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-
 import type { JSX } from "react/jsx-dev-runtime";
 
-import { Footer, Input } from "@/presentation/components";
+import { Footer, Input, Spinner } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
 import { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
@@ -63,13 +61,18 @@ export default function SignUpPage({ validation }: Props): JSX.Element {
     }));
   }
 
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    setState((prev) => ({ ...prev, isLoading: true }));
+  }
+
   return (
     <div className="h-screen flex flex-col justify-between">
       <Header />
 
       <form
         className="flex flex-col w-100 bg-white p-10 rounded-lg self-center shadow-black/30 shadow-xs"
-        onSubmit={() => { }}
+        onSubmit={handleSubmit}
         data-testid="signup-form"
       >
         <h2 className="text-primaryDark text-center uppercase text-xl">
@@ -143,6 +146,12 @@ export default function SignUpPage({ validation }: Props): JSX.Element {
             Login
           </span>
         </p>
+
+        {state.isLoading && (
+          <div className="mt-8 mx-auto">
+            <Spinner />
+          </div>
+        )}
       </form>
 
       <Footer />
