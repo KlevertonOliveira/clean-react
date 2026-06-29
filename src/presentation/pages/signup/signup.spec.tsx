@@ -22,7 +22,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   };
 };
 
-describe("Login Component", () => {
+describe("SignUpPage", () => {
   afterEach(cleanup);
 
   test("Should start with initial state", async () => {
@@ -39,7 +39,7 @@ describe("Login Component", () => {
     const submitButton = sut.getByTestId("submit-button");
     expect(submitButton).toBeDisabled();
 
-    const fields = ["name", "email", "password", "confirm-password"];
+    const fields = ["name", "email", "password", "confirmPassword"];
 
     for (const field of fields) {
       Helper.testStatusForField(sut, field, validationError);
@@ -70,6 +70,17 @@ describe("Login Component", () => {
 
   test("Should show password error if Validation fails", async () => {
     const field = "password";
+    const validationError = faker.lorem.word();
+
+    const { sut } = makeSut({ validationError });
+    await sut.findByTestId("signup-form");
+
+    await Helper.populateField(sut, field);
+    Helper.testStatusForField(sut, field, validationError);
+  });
+
+  test("Should show confirm password error if Validation fails", async () => {
+    const field = "confirmPassword";
     const validationError = faker.lorem.word();
 
     const { sut } = makeSut({ validationError });
