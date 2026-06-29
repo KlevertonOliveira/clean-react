@@ -119,4 +119,14 @@ describe("SignUpPage", () => {
     await Helper.populateField(sut, field);
     Helper.testStatusForField(sut, field, "");
   });
+
+  test("Should show valid confirmPassword state if Validation succeeds", async () => {
+    const field = "confirmPassword";
+
+    const { sut } = makeSut();
+    await sut.findByTestId("signup-form");
+
+    await Helper.populateField(sut, field);
+    Helper.testStatusForField(sut, field, "");
+  });
 });
