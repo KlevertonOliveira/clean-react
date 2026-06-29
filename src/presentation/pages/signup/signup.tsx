@@ -93,7 +93,7 @@ export default function SignUpPage({ validation }: Props): JSX.Element {
             name="email"
             placeholder="Enter your email"
             className="w-full"
-            onChange={() => { }}
+            onChange={handleChange}
             errorMessage={state.fieldErrors.email}
           />
         </div>
