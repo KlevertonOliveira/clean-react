@@ -123,8 +123,13 @@ export default function SignUpPage({ validation }: Props): JSX.Element {
         <button
           className="mt-8"
           type="submit"
-          disabled
           data-testid="submit-button"
+          disabled={state.isLoading || Boolean(
+            state.fieldErrors.name
+            || state.fieldErrors.email
+            || state.fieldErrors.password
+            || state.fieldErrors.confirmPassword
+          )}
         >
           Sign Up
         </button>
