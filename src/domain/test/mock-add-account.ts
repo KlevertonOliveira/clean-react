@@ -8,6 +8,6 @@ export const mockAddAccountParams = (): AddAccountParams => {
     name: faker.lorem.word(),
     email: faker.internet.email(),
     password,
-    passwordConfirmation: password
+    confirmPassword: password
   };
 };
