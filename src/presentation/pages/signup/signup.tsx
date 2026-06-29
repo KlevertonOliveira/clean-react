@@ -5,6 +5,7 @@ import type { JSX } from "react/jsx-dev-runtime";
 import { Footer, Input } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
 import { useState } from "react";
+import type { Validation } from "@/presentation/protocols/validation";
 
 type FormState = {
   isLoading: boolean;
@@ -23,9 +24,12 @@ type FormState = {
   formError: string;
 };
 
+type Props = {
+  validation: Validation;
+};
 
-export default function SignUpPage(): JSX.Element {
-  const [state] = useState<FormState>({
+export default function SignUpPage({ validation }: Props): JSX.Element {
+  const [state, setState] = useState<FormState>({
     isLoading: false,
     fields: {
       name: "",
@@ -41,6 +45,23 @@ export default function SignUpPage(): JSX.Element {
     },
     formError: "",
   });
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement, Element>): void {
+    const fieldName = event.target.name as keyof FormState["fields"];
+    const fieldValue = event.target.value;
+
+    setState((prev) => ({
+      ...prev,
+      fields: {
+        ...prev.fields,
+        [fieldName]: fieldValue
+      },
+      fieldErrors: {
+        ...prev.fieldErrors,
+        [fieldName]: validation.validate(fieldName, fieldValue),
+      },
+    }));
+  }
 
   return (
     <div className="h-screen flex flex-col justify-between">
@@ -61,7 +82,7 @@ export default function SignUpPage(): JSX.Element {
             name="name"
             placeholder="Enter your name"
             className="w-full"
-            onChange={() => { }}
+            onChange={handleChange}
             errorMessage={state.fieldErrors.name}
           />
         </div>
