@@ -56,4 +56,15 @@ describe("Login Component", () => {
     await Helper.populateField(sut, field);
     Helper.testStatusForField(sut, field, validationError);
   });
+
+  test("Should show email error if Validation fails", async () => {
+    const field = "email";
+    const validationError = faker.lorem.word();
+
+    const { sut } = makeSut({ validationError });
+    await sut.findByTestId("signup-form");
+
+    await Helper.populateField(sut, field);
+    Helper.testStatusForField(sut, field, validationError);
+  });
 });
