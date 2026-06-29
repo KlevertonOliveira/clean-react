@@ -4,8 +4,43 @@ import type { JSX } from "react/jsx-dev-runtime";
 
 import { Footer, Input } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
+import { useState } from "react";
+
+type FormState = {
+  isLoading: boolean;
+  fields: {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  },
+  fieldErrors: {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  },
+  formError: string;
+};
+
 
 export default function SignUpPage(): JSX.Element {
+  const [state] = useState<FormState>({
+    isLoading: false,
+    fields: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    fieldErrors: {
+      name: "Required field",
+      email: "Required field",
+      password: "Required field",
+      confirmPassword: "Required field",
+    },
+    formError: "",
+  });
 
   return (
     <div className="h-screen flex flex-col justify-between">
@@ -27,6 +62,7 @@ export default function SignUpPage(): JSX.Element {
             placeholder="Enter your name"
             className="w-full"
             onChange={() => { }}
+            errorMessage={state.fieldErrors.name}
           />
         </div>
 
@@ -37,6 +73,7 @@ export default function SignUpPage(): JSX.Element {
             placeholder="Enter your email"
             className="w-full"
             onChange={() => { }}
+            errorMessage={state.fieldErrors.email}
           />
         </div>
 
@@ -47,6 +84,7 @@ export default function SignUpPage(): JSX.Element {
             placeholder="Enter your password"
             className="w-full"
             onChange={() => { }}
+            errorMessage={state.fieldErrors.password}
           />
         </div>
 
@@ -57,12 +95,14 @@ export default function SignUpPage(): JSX.Element {
             placeholder="Confirm password"
             className="w-full"
             onChange={() => { }}
+            errorMessage={state.fieldErrors.confirmPassword}
           />
         </div>
 
         <button
           className="mt-8"
           type="submit"
+          disabled
           data-testid="submit-button"
         >
           Sign Up
