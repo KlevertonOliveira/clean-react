@@ -129,4 +129,20 @@ describe("SignUpPage", () => {
     await Helper.populateField(sut, field);
     Helper.testStatusForField(sut, field, "");
   });
+
+  test("Should enable submit button if form is valid", async () => {
+    const { sut } = makeSut();
+    await sut.findByTestId("signup-form");
+
+    const name = faker.lorem.word();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+
+    await Helper.populateField(sut, "name", name);
+    await Helper.populateField(sut, "email", email);
+    await Helper.populateField(sut, "password", password);
+    await Helper.populateField(sut, "confirmPassword", password);
+
+    expect(sut.getByTestId('submit-button')).toBeEnabled();
+  });
 });
