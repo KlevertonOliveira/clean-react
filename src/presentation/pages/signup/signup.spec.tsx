@@ -1,37 +1,49 @@
 import { cleanup, render, type RenderResult } from "@testing-library/react";
-import SignUpPage from "./signup";
 import { Helper, ValidationSpy } from "@/presentation/test";
-import { faker } from "@faker-js/faker";
+import { AddAccountSpy } from "@/presentation/test/mock-add-account";
 import userEvent from "@testing-library/user-event";
+import { faker } from "@faker-js/faker";
+
+import SignUpPage from "./signup";
 
 type SutTypes = {
   sut: RenderResult;
+  addAccountSpy: AddAccountSpy,
 };
 
 type SutParams = {
   validationError: string;
 };
 
+
 const makeSut = (params?: SutParams): SutTypes => {
   const validationSpy = new ValidationSpy();
   validationSpy.errorMessage = params?.validationError ?? '';
 
-  const sut = render(<SignUpPage validation={validationSpy} />);
+  const addAccountSpy = new AddAccountSpy();
+
+  const sut = render(
+    <SignUpPage
+      validation={validationSpy}
+      addAccount={addAccountSpy}
+    />
+  );
 
   return {
     sut,
+    addAccountSpy
   };
 };
 
-const simulateValidSubmit = async (sut: RenderResult) => {
-  const name = faker.lorem.word();
-  const email = faker.internet.email();
-  const password = faker.internet.password();
-
-  await Helper.populateField(sut, "name", name);
-  await Helper.populateField(sut, "email", email);
-  await Helper.populateField(sut, "password", password);
-  await Helper.populateField(sut, "confirmPassword", password);
+const simulateValidSubmit = async (sut: RenderResult, fields = {
+  name: faker.lorem.word(),
+  email: faker.internet.email(),
+  password: faker.internet.password()
+}) => {
+  await Helper.populateField(sut, "name", fields.name);
+  await Helper.populateField(sut, "email", fields.email);
+  await Helper.populateField(sut, "password", fields.password);
+  await Helper.populateField(sut, "confirmPassword", fields.password);
 
   const submitButton = sut.getByTestId("submit-button");
   expect(submitButton).toBeEnabled();
@@ -175,5 +187,20 @@ describe("SignUpPage", () => {
 
     const spinner = sut.getByTestId("spinner");
     expect(spinner).toBeInTheDocument();
+  });
+
+  test('Should call addAccount with correct values', async () => {
+    const { sut, addAccountSpy } = makeSut();
+    await sut.findByTestId('signup-form');
+
+    const name = faker.lorem.word();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+
+    await simulateValidSubmit(sut, { name, email, password });
+
+    expect(addAccountSpy.params).toEqual({
+      name, email, password, confirmPassword: password
+    });
   });
 });
