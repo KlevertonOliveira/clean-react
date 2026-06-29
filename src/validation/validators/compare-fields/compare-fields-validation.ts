@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { FieldValidation } from "@/validation/protocols/field-validation";
-import { InvalidFieldError, RequiredFieldError } from "@/validation/errors";
+import { InvalidFieldError } from "@/validation/errors";
 
 export class CompareFieldsValidation implements FieldValidation {
   constructor(
@@ -9,6 +8,6 @@ export class CompareFieldsValidation implements FieldValidation {
   ) { }
 
   validate(value: string): Error | null {
-    return new InvalidFieldError();
+    return value === this.valueToCompare ? null : new InvalidFieldError();
   }
 }
