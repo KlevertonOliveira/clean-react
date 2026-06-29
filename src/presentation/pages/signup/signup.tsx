@@ -4,6 +4,7 @@ import { Footer, Input, Spinner } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
 import { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
+import type { AddAccount } from "@/domain/usecases";
 
 type FormState = {
   isLoading: boolean;
@@ -24,9 +25,13 @@ type FormState = {
 
 type Props = {
   validation: Validation;
+  addAccount: AddAccount;
 };
 
-export default function SignUpPage({ validation }: Props): JSX.Element {
+export default function SignUpPage({
+  validation,
+  addAccount
+}: Props): JSX.Element {
   const [state, setState] = useState<FormState>({
     isLoading: false,
     fields: {
@@ -64,6 +69,7 @@ export default function SignUpPage({ validation }: Props): JSX.Element {
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setState((prev) => ({ ...prev, isLoading: true }));
+    await addAccount.add(state.fields);
   }
 
   return (
