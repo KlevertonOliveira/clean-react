@@ -89,4 +89,24 @@ describe("SignUpPage", () => {
     await Helper.populateField(sut, field);
     Helper.testStatusForField(sut, field, validationError);
   });
+
+  test("Should show valid name state if Validation succeeds", async () => {
+    const field = "name";
+
+    const { sut } = makeSut();
+    await sut.findByTestId("signup-form");
+
+    await Helper.populateField(sut, field);
+    Helper.testStatusForField(sut, field, "");
+  });
+
+  test("Should show valid email state if Validation succeeds", async () => {
+    const field = "email";
+
+    const { sut } = makeSut();
+    await sut.findByTestId("signup-form");
+
+    await Helper.populateField(sut, field);
+    Helper.testStatusForField(sut, field, "");
+  });
 });
