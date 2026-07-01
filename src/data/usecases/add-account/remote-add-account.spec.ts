@@ -45,7 +45,7 @@ describe('RemoteAddAccount', () => {
     expect(httpPostClientSpy.body).toBe(addAccountParams);
   });
 
-  test('Should throw EmailInUseError if HttpPostClient returns 403', () => {
+  test('Should throw EmailInUseError if HttpPostClient returns 403', async () => {
     const { sut, httpPostClientSpy } = makeSut();
 
     httpPostClientSpy.response = {
@@ -54,10 +54,10 @@ describe('RemoteAddAccount', () => {
 
     const promise = sut.add(mockAddAccountParams());
 
-    expect(promise).rejects.toThrow(new EmailInUseError());
+    await expect(promise).rejects.toThrow(new EmailInUseError());
   });
 
-  test('Should throw UnexpectedError if HttpPostClient returns 400', () => {
+  test('Should throw UnexpectedError if HttpPostClient returns 400', async () => {
     const { sut, httpPostClientSpy } = makeSut();
 
     httpPostClientSpy.response = {
@@ -66,10 +66,10 @@ describe('RemoteAddAccount', () => {
 
     const promise = sut.add(mockAddAccountParams());
 
-    expect(promise).rejects.toThrow(new UnexpectedError());
+    await expect(promise).rejects.toThrow(new UnexpectedError());
   });
 
-  test('Should throw UnexpectedError if HttpPostClient returns 500', () => {
+  test('Should throw UnexpectedError if HttpPostClient returns 500', async () => {
     const { sut, httpPostClientSpy } = makeSut();
 
     httpPostClientSpy.response = {
@@ -78,10 +78,10 @@ describe('RemoteAddAccount', () => {
 
     const promise = sut.add(mockAddAccountParams());
 
-    expect(promise).rejects.toThrow(new UnexpectedError());
+    await expect(promise).rejects.toThrow(new UnexpectedError());
   });
 
-  test('Should throw UnexpectedError if HttpPostClient returns 404', () => {
+  test('Should throw UnexpectedError if HttpPostClient returns 404', async () => {
     const { sut, httpPostClientSpy } = makeSut();
 
     httpPostClientSpy.response = {
@@ -90,7 +90,7 @@ describe('RemoteAddAccount', () => {
 
     const promise = sut.add(mockAddAccountParams());
 
-    expect(promise).rejects.toThrow(new UnexpectedError());
+    await expect(promise).rejects.toThrow(new UnexpectedError());
   });
 
   test('Should return an AccountModel if HttpPostClient returns 200', async () => {
