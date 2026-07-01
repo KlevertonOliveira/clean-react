@@ -5,7 +5,7 @@ import { Header } from "@/presentation/pages/login/components";
 import { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
 import type { AddAccount, SaveAccessToken } from "@/domain/usecases";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 type FormState = {
   isLoading: boolean;
@@ -162,12 +162,13 @@ export default function SignUpPage({
 
         <p className="text-center text-center mt-4 text-neutral-500">
           Already have an account? {" "}
-          <span
+          <Link
             className="text-primary cursor-pointer hover:underline"
-            data-testid='login-link'
+            to="/login"
+            data-testid="login-link"
           >
             Login
-          </span>
+          </Link>
         </p>
 
         {state.isLoading && (
