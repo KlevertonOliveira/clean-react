@@ -1,38 +1,50 @@
 import { cleanup, render, type RenderResult } from "@testing-library/react";
-import { Helper, ValidationSpy } from "@/presentation/test";
+import { Helper, SaveAccessTokenMock, ValidationSpy } from "@/presentation/test";
 import { AddAccountSpy } from "@/presentation/test/mock-add-account";
 import userEvent from "@testing-library/user-event";
 import { faker } from "@faker-js/faker";
 
 import SignUpPage from "./signup";
 import { EmailInUseError } from "@/domain/errors";
+import { generateTestRouter } from "@/utils/test/test-router-utils";
+import { RouterProvider } from "@tanstack/react-router";
 
 type SutTypes = {
   sut: RenderResult;
   addAccountSpy: AddAccountSpy,
+  saveAccessTokenMock: SaveAccessTokenMock;
+  router: ReturnType<typeof generateTestRouter>;
 };
 
 type SutParams = {
   validationError: string;
 };
 
-
 const makeSut = (params?: SutParams): SutTypes => {
   const validationSpy = new ValidationSpy();
   validationSpy.errorMessage = params?.validationError ?? '';
 
   const addAccountSpy = new AddAccountSpy();
+  const saveAccessTokenMock = new SaveAccessTokenMock();
 
-  const sut = render(
-    <SignUpPage
-      validation={validationSpy}
-      addAccount={addAccountSpy}
-    />
-  );
+  const router = generateTestRouter({
+    initialLocation: '/signup',
+    rootRoutecomponent: (
+      <SignUpPage
+        validation={validationSpy}
+        addAccount={addAccountSpy}
+        saveAccessToken={saveAccessTokenMock}
+      />
+    )
+  });
+
+  const sut = render(<RouterProvider router={router} />);
 
   return {
     sut,
-    addAccountSpy
+    addAccountSpy,
+    saveAccessTokenMock,
+    router
   };
 };
 
@@ -217,5 +229,15 @@ describe("SignUpPage", () => {
     const formErrorMessage = sut.getByTestId('formErrorMessage');
     expect(formErrorMessage).toBeInTheDocument();
     expect(formErrorMessage).toHaveTextContent(error.message);
+  });
+
+  test('Should call SaveAccessToken and redirect to main page on success', async () => {
+    const { sut, addAccountSpy, saveAccessTokenMock, router } = makeSut();
+    await sut.findByTestId('signup-form');
+
+    await simulateValidSubmit(sut);
+
+    expect(saveAccessTokenMock.accessToken).toBe(addAccountSpy.account.accessToken);
+    expect(router.state.location.pathname).toBe('/');
   });
 });
