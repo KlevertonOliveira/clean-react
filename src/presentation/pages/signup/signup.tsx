@@ -68,8 +68,16 @@ export default function SignUpPage({
 
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    setState((prev) => ({ ...prev, isLoading: true }));
-    await addAccount.add(state.fields);
+
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+      await addAccount.add(state.fields);
+    }
+    catch (error) {
+      setState((prev) => ({
+        ...prev, isLoading: false, formError: (error as Error).message
+      }));
+    }
   }
 
   return (
@@ -157,6 +165,12 @@ export default function SignUpPage({
           <div className="mt-8 mx-auto">
             <Spinner />
           </div>
+        )}
+
+        {state.formError && (
+          <span className="mt-8 mx-auto" data-testid="formErrorMessage">
+            {state.formError}
+          </span>
         )}
       </form>
 
