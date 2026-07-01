@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { faker } from "@faker-js/faker";
 
 import SignUpPage from "./signup";
+import { EmailInUseError } from "@/domain/errors";
 
 type SutTypes = {
   sut: RenderResult;
@@ -176,7 +177,7 @@ describe("SignUpPage", () => {
     expect(sut.getByTestId('submit-button')).toBeEnabled();
   });
 
-  test('Should show spinner on submit', async () => {
+  test('Should disable submit button and show spinner on submit', async () => {
     const { sut } = makeSut();
     await sut.findByTestId('signup-form');
 
@@ -202,5 +203,19 @@ describe("SignUpPage", () => {
     expect(addAccountSpy.params).toEqual({
       name, email, password, confirmPassword: password
     });
+  });
+
+  test('Should present error if AddAccount fails', async () => {
+    const { sut, addAccountSpy } = makeSut();
+    await sut.findByTestId('signup-form');
+
+    const error = new EmailInUseError();
+    vi.spyOn(addAccountSpy, 'add').mockRejectedValue(error);
+
+    await simulateValidSubmit(sut);
+
+    const formErrorMessage = sut.getByTestId('formErrorMessage');
+    expect(formErrorMessage).toBeInTheDocument();
+    expect(formErrorMessage).toHaveTextContent(error.message);
   });
 });
