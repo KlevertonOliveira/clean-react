@@ -246,12 +246,25 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     const error = new Error(faker.lorem.word());
-    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValue(error);
+    vi.spyOn(saveAccessTokenMock, "save").mockRejectedValue(error);
 
     await simulateValidSubmit(sut);
 
     const formErrorMessage = sut.getByTestId("formErrorMessage");
     expect(formErrorMessage).toBeInTheDocument();
     expect(formErrorMessage).toHaveTextContent(error.message);
+  });
+
+  test("Should redirect to login page upon Link interaction", async () => {
+    const { sut, router } = makeSut();
+    await sut.findByTestId("signup-form");
+
+    const loginLink = sut.getByTestId("login-link");
+    expect(loginLink).toBeInTheDocument();
+
+    const user = userEvent.setup();
+    await user.click(loginLink);
+
+    expect(router.state.location.pathname).toBe("/login");
   });
 });
