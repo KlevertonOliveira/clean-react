@@ -22,13 +22,13 @@ type SutParams = {
 
 const makeSut = (params?: SutParams): SutTypes => {
   const validationSpy = new ValidationSpy();
-  validationSpy.errorMessage = params?.validationError ?? '';
+  validationSpy.errorMessage = params?.validationError ?? "";
 
   const addAccountSpy = new AddAccountSpy();
   const saveAccessTokenMock = new SaveAccessTokenMock();
 
   const router = generateTestRouter({
-    initialLocation: '/signup',
+    initialLocation: "/signup",
     rootRoutecomponent: (
       <SignUpPage
         validation={validationSpy}
@@ -186,12 +186,12 @@ describe("SignUpPage", () => {
     await Helper.populateField(sut, "password", password);
     await Helper.populateField(sut, "confirmPassword", password);
 
-    expect(sut.getByTestId('submit-button')).toBeEnabled();
+    expect(sut.getByTestId("submit-button")).toBeEnabled();
   });
 
-  test('Should disable submit button and show spinner on submit', async () => {
+  test("Should disable submit button and show spinner on submit", async () => {
     const { sut } = makeSut();
-    await sut.findByTestId('signup-form');
+    await sut.findByTestId("signup-form");
 
     await simulateValidSubmit(sut);
 
@@ -202,9 +202,9 @@ describe("SignUpPage", () => {
     expect(spinner).toBeInTheDocument();
   });
 
-  test('Should call addAccount with correct values', async () => {
+  test("Should call addAccount with correct values", async () => {
     const { sut, addAccountSpy } = makeSut();
-    await sut.findByTestId('signup-form');
+    await sut.findByTestId("signup-form");
 
     const name = faker.lorem.word();
     const email = faker.internet.email();
@@ -217,27 +217,41 @@ describe("SignUpPage", () => {
     });
   });
 
-  test('Should present error if AddAccount fails', async () => {
+  test("Should present error if AddAccount fails", async () => {
     const { sut, addAccountSpy } = makeSut();
-    await sut.findByTestId('signup-form');
+    await sut.findByTestId("signup-form");
 
     const error = new EmailInUseError();
-    vi.spyOn(addAccountSpy, 'add').mockRejectedValue(error);
+    vi.spyOn(addAccountSpy, "add").mockRejectedValue(error);
 
     await simulateValidSubmit(sut);
 
-    const formErrorMessage = sut.getByTestId('formErrorMessage');
+    const formErrorMessage = sut.getByTestId("formErrorMessage");
     expect(formErrorMessage).toBeInTheDocument();
     expect(formErrorMessage).toHaveTextContent(error.message);
   });
 
-  test('Should call SaveAccessToken and redirect to main page on success', async () => {
+  test("Should call SaveAccessToken and redirect to main page on success", async () => {
     const { sut, addAccountSpy, saveAccessTokenMock, router } = makeSut();
-    await sut.findByTestId('signup-form');
+    await sut.findByTestId("signup-form");
 
     await simulateValidSubmit(sut);
 
     expect(saveAccessTokenMock.accessToken).toBe(addAccountSpy.account.accessToken);
-    expect(router.state.location.pathname).toBe('/');
+    expect(router.state.location.pathname).toBe("/");
+  });
+
+  test("Should present error if SaveAccessToken fails", async () => {
+    const { sut, saveAccessTokenMock } = makeSut();
+    await sut.findByTestId("signup-form");
+
+    const error = new Error(faker.lorem.word());
+    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValue(error);
+
+    await simulateValidSubmit(sut);
+
+    const formErrorMessage = sut.getByTestId("formErrorMessage");
+    expect(formErrorMessage).toBeInTheDocument();
+    expect(formErrorMessage).toHaveTextContent(error.message);
   });
 });
