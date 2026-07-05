@@ -66,7 +66,17 @@ export default function SignUpPage({
       },
       fieldErrors: {
         ...prev.fieldErrors,
-        [fieldName]: validation.validate(fieldName, { fieldValue }),
+        [fieldName]: validation.validate(fieldName, {
+          ...state.fields,
+          [fieldName]: fieldValue
+        }),
+
+        ...(fieldName === 'password' && {
+          confirmPassword: validation.validate('confirmPassword', {
+            ...state.fields,
+            password: fieldValue,
+          })
+        })
       },
     }));
   }
