@@ -16,7 +16,7 @@ export const testStatusForField = (
   sut: RenderResult,
   field: string,
   validationError: string,
-) => {
+): void => {
   const fieldStatus = sut.getByTestId(field + '-status');
   expect(fieldStatus).toBeInTheDocument();
   expect(fieldStatus.title).toBe(validationError);

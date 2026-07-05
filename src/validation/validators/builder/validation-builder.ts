@@ -1,28 +1,36 @@
 import type { FieldValidation } from "@/validation/protocols/field-validation";
 import { EmailValidation, MinLengthValidation, RequiredFieldValidation } from "@/validation/validators";
+import { CompareFieldsValidation } from "../compare-fields/compare-fields-validation";
 
 export class ValidationBuilder {
   private constructor(
     private readonly fieldName: string,
     private readonly validations: FieldValidation[]
-  ){}
+  ) { }
 
-  static field(fieldName: string): ValidationBuilder{
+  static field(fieldName: string): ValidationBuilder {
     return new ValidationBuilder(fieldName, []);
   }
 
-  required(): ValidationBuilder{
-    this.validations.push(new RequiredFieldValidation(this.fieldName))
+  required(): ValidationBuilder {
+    this.validations.push(new RequiredFieldValidation(this.fieldName));
     return this;
   }
 
-  min(value: number): ValidationBuilder{
-    this.validations.push(new MinLengthValidation(this.fieldName, value))
+  min(value: number): ValidationBuilder {
+    this.validations.push(new MinLengthValidation(this.fieldName, value));
     return this;
   }
-  
-  email(): ValidationBuilder{
-    this.validations.push(new EmailValidation(this.fieldName))
+
+  email(): ValidationBuilder {
+    this.validations.push(new EmailValidation(this.fieldName));
+    return this;
+  }
+
+  sameAs(fieldToCompare: string): ValidationBuilder {
+    this.validations.push(
+      new CompareFieldsValidation(this.fieldName, fieldToCompare)
+    );
     return this;
   }
 

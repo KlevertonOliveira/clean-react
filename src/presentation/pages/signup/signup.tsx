@@ -66,7 +66,7 @@ export default function SignUpPage({
       },
       fieldErrors: {
         ...prev.fieldErrors,
-        [fieldName]: validation.validate(fieldName, fieldValue),
+        [fieldName]: validation.validate(fieldName, { fieldValue }),
       },
     }));
   }

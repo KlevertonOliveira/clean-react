@@ -59,7 +59,7 @@ export default function LoginPage({
       },
       fieldErrors: {
         ...prev.fieldErrors,
-        [fieldName]: validation.validate(fieldName, fieldValue),
+        [fieldName]: validation.validate(fieldName, { [fieldName]: fieldValue }),
       },
     }));
   }
