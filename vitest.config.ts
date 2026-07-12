@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import path from 'path';
@@ -13,7 +13,7 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     tailwindcss(),
-    react(), 
+    react(),
   ],
   resolve: {
     alias: [
@@ -27,6 +27,11 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ['text', 'html']
-    }
+    },
+    exclude: [
+      '**/node_modules/**',
+      '**/src/test/playwright**',                  // to exclude playwright tests to be executed
+      '**/dist/**'                    // stops running tests from production env
+    ]
   }
-})
+});
