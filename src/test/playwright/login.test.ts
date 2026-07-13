@@ -29,4 +29,15 @@ test.describe("Login", () => {
     await expect(page.getByTestId("submit-button")).toBeDisabled();
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
   });
+
+  test("Should present valid state if form is valid", async ({ page }) => {
+    await page.getByTestId("email").fill(faker.internet.email());
+    await expect(page.getByTestId("email-status")).toHaveAttribute("title", "");
+
+    await page.getByTestId("password").fill(faker.internet.password());
+    await expect(page.getByTestId("password-status")).toHaveAttribute("title", "");
+
+    await expect(page.getByTestId("submit-button")).toBeEnabled();
+    await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
+  });
 });
