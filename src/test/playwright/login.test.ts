@@ -53,4 +53,18 @@ test.describe("Login", () => {
 
     expect(page.url()).toEqual(`${baseURL}/login`);
   });
+
+  test("Should present save access token if valid credentials are provided", async ({ page, baseURL }) => {
+    await page.getByTestId("email").fill("test@gmail.com");
+    await page.getByTestId("password").fill("abc12345");
+    await page.getByTestId("submit-button").click();
+
+    await expect(page.getByTestId("spinner")).toBeVisible();
+    await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
+
+    await expect(page.getByTestId("spinner")).not.toBeVisible();
+
+    expect(page.url()).toEqual(`${baseURL}/`);
+    expect(page.localStorage.getItem('accessToken')).toBeTruthy();
+  });
 });
