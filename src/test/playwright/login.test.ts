@@ -89,6 +89,26 @@ test.describe("Login", () => {
     expect(page.url()).toEqual(`${baseURL}/login`);
   });
 
+  test("Should prevent submit if form is invalid", async ({ page, baseURL }) => {
+    let loginCallCount = 0;
+
+    await page.route("*/**/api/login", async route => {
+      loginCallCount++;
+      await route.fulfill({
+        status: 200,
+        json: { accessToken: faker.string.uuid() }
+      });
+    });
+
+    await page.getByTestId("email").fill(faker.internet.email());
+
+    await expect(page.getByTestId("submit-button")).toBeDisabled();
+    await page.getByTestId("email").press("Enter");
+
+    expect(loginCallCount).toBe(0);
+    expect(page.url()).toEqual(`${baseURL}/login`);
+  });
+
   test("Should prevent multiple submits", async ({ page, baseURL }) => {
     let loginCallCount = 0;
 
