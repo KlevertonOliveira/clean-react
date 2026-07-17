@@ -40,7 +40,22 @@ test.describe("Login", () => {
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
   });
 
-  test("Should present error if invalid credentials are provided", async ({
+  test("Should present UnexpectedError on 400", async ({
+    page, baseURL }) => {
+    await page.route('*/**/api/login', async route => {
+      await route.fulfill({ status: 400 });
+    });
+
+    await page.getByTestId("email").fill(faker.internet.email());
+    await page.getByTestId("password").fill(faker.internet.password());
+    await page.getByTestId("submit-button").click();
+
+    await expect(page.getByTestId("formErrorMessage")).toBeVisible();
+    await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
+    expect(page.url()).toEqual(`${baseURL}/login`);
+  });
+
+  test("Should present InvalidCredentialsError on 401", async ({
     page, baseURL }) => {
     await page.route('*/**/api/login', async route => {
       await route.fulfill({ status: 401 });
