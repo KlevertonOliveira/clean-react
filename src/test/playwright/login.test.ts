@@ -82,7 +82,7 @@ test.describe("Login", () => {
 
     await page.getByTestId("email").fill(faker.internet.email());
     await page.getByTestId("password").fill(faker.internet.password());
-    await page.getByTestId("submit-button").click();
+    await page.getByTestId("password").press("Enter");
 
     await expect(page.getByTestId("formErrorMessage")).toBeVisible();
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
