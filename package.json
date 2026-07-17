@@ -16,7 +16,8 @@
     "prepare": "husky install",
     "lint-staged": "lint-staged",
     "check": "npm-check -u -s",
-    "test:playwright": "npx playwright test"
+    "test:playwright": "npx playwright test",
+    "play:ui": "npx playwright test --ui"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
