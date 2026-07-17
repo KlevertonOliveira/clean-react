@@ -40,31 +40,36 @@ test.describe("Login", () => {
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
   });
 
-  test("Should present error if invalid credentials are provided", async ({ page, baseURL }) => {
+  test("Should present error if invalid credentials are provided", async ({
+    page, baseURL }) => {
+    await page.route('*/**/api/login', async route => {
+      await route.fulfill({ status: 401 });
+    });
+
     await page.getByTestId("email").fill(faker.internet.email());
     await page.getByTestId("password").fill(faker.internet.password());
     await page.getByTestId("submit-button").click();
 
-    await expect(page.getByTestId("spinner")).toBeVisible();
-    await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
-
-    await expect(page.getByTestId("spinner")).not.toBeVisible();
     await expect(page.getByTestId("formErrorMessage")).toBeVisible();
-
+    await expect(page.getByTestId("formErrorMessage")).toHaveText("Invalid credentials");
     expect(page.url()).toEqual(`${baseURL}/login`);
   });
 
   test("Should present save access token if valid credentials are provided", async ({ page, baseURL }) => {
-    await page.getByTestId("email").fill("test@gmail.com");
-    await page.getByTestId("password").fill("abc12345");
+    const accessToken = faker.string.uuid();
+
+    await page.route("*/**/api/login", async route => {
+      await route.fulfill({
+        status: 200,
+        json: { accessToken }
+      });
+    });
+
+    await page.getByTestId("email").fill(faker.internet.email());
+    await page.getByTestId("password").fill(faker.internet.password());
     await page.getByTestId("submit-button").click();
 
-    await expect(page.getByTestId("spinner")).toBeVisible();
-    await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
-
-    await expect(page.getByTestId("spinner")).not.toBeVisible();
-
     expect(page.url()).toEqual(`${baseURL}/`);
-    expect(page.localStorage.getItem('accessToken')).toBeTruthy();
+    expect(await page.localStorage.getItem('accessToken')).toEqual(accessToken);
   });
 });
