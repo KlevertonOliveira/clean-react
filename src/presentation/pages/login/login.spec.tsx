@@ -83,7 +83,7 @@ describe('Login Component', () => {
     const fields = ["email", "password"];
 
     for (const field of fields) {
-      Helper.testStatusForField(sut, field, validationError);
+      Helper.testErrorStatusForField(sut, field, validationError);
     }
   });
 
@@ -116,7 +116,7 @@ describe('Login Component', () => {
 
     await Helper.populateField(sut, "email", faker.internet.email());
 
-    Helper.testStatusForField(sut, "email", validationError);
+    Helper.testErrorStatusForField(sut, "email", validationError);
   });
 
   test('Should show password error if Validation fails', async () => {
@@ -126,7 +126,7 @@ describe('Login Component', () => {
 
     await Helper.populateField(sut, "password", faker.internet.password());
 
-    Helper.testStatusForField(sut, "password", validationError);
+    Helper.testErrorStatusForField(sut, "password", validationError);
   });
 
   test('Should show valid email state if Validation succeeds', async () => {
@@ -135,7 +135,7 @@ describe('Login Component', () => {
 
     await Helper.populateField(sut, "email", faker.internet.email());
 
-    Helper.testStatusForField(sut, "email", "");
+    expect(sut.queryByTestId("email-status")).not.toBeInTheDocument();
   });
 
   test('Should show valid password state if Validation succeeds', async () => {
@@ -143,8 +143,7 @@ describe('Login Component', () => {
     await sut.findByTestId('login-form');
 
     await Helper.populateField(sut, "password", faker.internet.password());
-
-    Helper.testStatusForField(sut, "password", "");
+    expect(sut.queryByTestId("email-status")).not.toBeInTheDocument();
   });
 
   test('Should enable submit button if form is valid', async () => {

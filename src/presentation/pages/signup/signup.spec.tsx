@@ -85,7 +85,7 @@ describe("SignUpPage", () => {
     const fields = ["name", "email", "password", "confirmPassword"];
 
     for (const field of fields) {
-      Helper.testStatusForField(sut, field, validationError);
+      Helper.testErrorStatusForField(sut, field, validationError);
     }
   });
 
@@ -97,7 +97,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, validationError);
+    Helper.testErrorStatusForField(sut, field, validationError);
   });
 
   test("Should show email error if Validation fails", async () => {
@@ -108,7 +108,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, validationError);
+    Helper.testErrorStatusForField(sut, field, validationError);
   });
 
   test("Should show password error if Validation fails", async () => {
@@ -119,7 +119,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, validationError);
+    Helper.testErrorStatusForField(sut, field, validationError);
   });
 
   test("Should show confirm password error if Validation fails", async () => {
@@ -130,7 +130,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, validationError);
+    Helper.testErrorStatusForField(sut, field, validationError);
   });
 
   test("Should show valid name state if Validation succeeds", async () => {
@@ -140,7 +140,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, "");
+    expect(sut.queryByTestId(`${field}-error-status`)).not.toBeInTheDocument();
   });
 
   test("Should show valid email state if Validation succeeds", async () => {
@@ -150,7 +150,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, "");
+    expect(sut.queryByTestId(`${field}-error-status`)).not.toBeInTheDocument();
   });
 
   test("Should show valid password state if Validation succeeds", async () => {
@@ -160,7 +160,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, "");
+    expect(sut.queryByTestId(`${field}-error-status`)).not.toBeInTheDocument();
   });
 
   test("Should show valid confirmPassword state if Validation succeeds", async () => {
@@ -170,7 +170,7 @@ describe("SignUpPage", () => {
     await sut.findByTestId("signup-form");
 
     await Helper.populateField(sut, field);
-    Helper.testStatusForField(sut, field, "");
+    expect(sut.queryByTestId(`${field}-error-status`)).not.toBeInTheDocument();
   });
 
   test("Should enable submit button if form is valid", async () => {

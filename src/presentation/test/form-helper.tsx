@@ -12,12 +12,12 @@ export const populateField = async (
   await user.type(fieldInput, value);
 };
 
-export const testStatusForField = (
+export const testErrorStatusForField = (
   sut: RenderResult,
   field: string,
   validationError: string,
 ): void => {
-  const fieldStatus = sut.getByTestId(field + '-status');
+  const fieldStatus = sut.getByTestId(field + '-error-status');
   expect(fieldStatus).toBeInTheDocument();
   expect(fieldStatus.title).toBe(validationError);
 };

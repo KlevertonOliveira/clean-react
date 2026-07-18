@@ -1,33 +1,46 @@
+import { WarningIcon } from "@phosphor-icons/react";
 import type { JSX } from "react/jsx-runtime";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
   errorMessage?: string;
-} ;
+};
 
-export default function Input({errorMessage, ...inputProps }: Props): JSX.Element {
+export default function Input({ errorMessage, ...inputProps }: Props): JSX.Element {
   return (
     <div className="flex items-center gap-4 w-full relative">
-      <input {...inputProps} data-testid={inputProps.name}/>
-
-      <Input.Status 
-        data-testid={`${inputProps.name}-status`}
+      <input
+        {...inputProps}
+        data-testid={inputProps.name}
         title={errorMessage}
+        className={`w-full rounded-sm py-0 pr-10 pl-2 leading-10 border focus:outline-none focus:ring
+          ${errorMessage
+            ? "border-red-400 ring-red-400"
+            : "border-green-400 ring-green-400"
+          }
+        `}
       />
+
+      {errorMessage && (
+        <Input.ErrorStatus
+          data-testid={`${inputProps.name}-error-status`}
+          title={errorMessage}
+        />
+      )}
     </div>
-  )
+  );
 }
 
-type StatusProps = React.HTMLAttributes<HTMLSpanElement>;
+type ErrorStatusProps = React.HTMLAttributes<HTMLSpanElement>;
 
-function Status(props: StatusProps): JSX.Element {
+function ErrorStatus(props: ErrorStatusProps): JSX.Element {
   return (
     <span
       {...props}
-      className={`absolute right-2 w-3 h-3 rounded-full 
-        ${ props.title ? 'cursor-help bg-red-500' : 'bg-green-500'}
-      `}
-    />
-  )
+      className={`absolute right-2 cursor-help`}
+    >
+      <WarningIcon size={24} className="text-red-500" />
+    </span>
+  );
 }
 
-Input.Status = Status;
+Input.ErrorStatus = ErrorStatus;
