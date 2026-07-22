@@ -23,7 +23,7 @@ test.describe("Login", () => {
     await expect(page.getByTestId("email-error-status")).toHaveAttribute("title", "Invalid field value");
 
     await page.getByTestId("password").fill(faker.string.alphanumeric(3));
-    await expect(page.getByTestId("password-error-status")).toHaveAttribute("title", "Invalid size error!");
+    await expect(page.getByTestId("password-error-status")).toHaveAttribute("title", "Invalid field size (minimum: 8");
 
     await expect(page.getByTestId("submit-button")).toBeDisabled();
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();

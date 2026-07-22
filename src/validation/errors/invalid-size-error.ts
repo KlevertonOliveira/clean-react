@@ -1,5 +1,5 @@
 export class InvalidSizeError extends Error {
-  constructor(){
-    super('Invalid size error!')
+  constructor(minLength: number) {
+    super(`Invalid field size (minimum: ${minLength})`);
   }
-} 
+}

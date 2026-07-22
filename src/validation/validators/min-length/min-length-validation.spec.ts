@@ -2,8 +2,10 @@ import { InvalidSizeError } from "@/validation/errors";
 import { MinLengthValidation } from "./min-length-validation";
 import { faker } from "@faker-js/faker";
 
+const MIN_LENGTH = 8;
+
 const makeSut = (field: string): MinLengthValidation => (
-  new MinLengthValidation(field, 8)
+  new MinLengthValidation(field, MIN_LENGTH)
 );
 
 describe('MinLengthValidation', () => {
@@ -11,7 +13,7 @@ describe('MinLengthValidation', () => {
     const field = faker.database.column();
     const sut = makeSut(field);
     const error = sut.validate({ [field]: faker.string.alphanumeric(7) });
-    expect(error).toEqual(new InvalidSizeError());
+    expect(error).toEqual(new InvalidSizeError(MIN_LENGTH));
   });
 
   test('Should return null when value length is valid', () => {
