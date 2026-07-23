@@ -1,8 +1,19 @@
 
 import { faker } from "@faker-js/faker";
-import { test, expect } from "@playwright/test";
-test.describe("SignUp", () => {
+import { test, expect, type Page } from "@playwright/test";
 
+const simulateValidSubmit = async (page: Page) => {
+  const password = faker.internet.password();
+  await page.getByTestId("name").fill(faker.string.alphanumeric(7));
+  await page.getByTestId("email").fill(faker.internet.email());
+  await page.getByTestId("password").fill(password);
+  await page.getByTestId("confirmPassword").fill(password);
+
+  await expect(page.getByTestId("submit-button")).toBeEnabled();
+  await page.getByTestId("submit-button").click();
+};
+
+test.describe("SignUp", () => {
   test.beforeEach(async ({ page, baseURL }) => {
     await page.goto(`${baseURL}/signup`, { waitUntil: "load" });
     await expect(page.getByTestId("signup-form")).toBeVisible();
@@ -59,5 +70,18 @@ test.describe("SignUp", () => {
 
     await expect(page.getByTestId("submit-button")).toBeEnabled();
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
+  });
+
+  test("Should present EmailInUserError on 403", async ({
+    page, baseURL }) => {
+    await page.route('*/**/api/signup', async route => {
+      await route.fulfill({ status: 403 });
+    });
+
+    await simulateValidSubmit(page);
+
+    await expect(page.getByTestId("formErrorMessage")).toBeVisible();
+    await expect(page.getByTestId("formErrorMessage")).toHaveText("Email already in use!");
+    expect(page.url()).toEqual(`${baseURL}/signup`);
   });
 });
