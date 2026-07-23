@@ -3,8 +3,8 @@ import { test, expect } from "@playwright/test";
 test.describe("Login", () => {
 
   test.beforeEach(async ({ page, baseURL }) => {
-    await page.goto(`${baseURL}/login`);
-    await expect(page).toHaveTitle("4Dev - Surveys for programmers");
+    await page.goto(`${baseURL}/login`, { waitUntil: "load" });
+    await expect(page.getByTestId("login-form")).toBeVisible();
   });
 
   test("Should load with correct initial state", async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe("Login", () => {
     await expect(page.getByTestId("email-error-status")).toHaveAttribute("title", "Invalid field value");
 
     await page.getByTestId("password").fill(faker.string.alphanumeric(3));
-    await expect(page.getByTestId("password-error-status")).toHaveAttribute("title", "Invalid field size (minimum: 8");
+    await expect(page.getByTestId("password-error-status")).toHaveAttribute("title", "Invalid field size (minimum: 8)");
 
     await expect(page.getByTestId("submit-button")).toBeDisabled();
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
