@@ -41,4 +41,23 @@ test.describe("SignUp", () => {
     await expect(page.getByTestId("submit-button")).toBeDisabled();
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
   });
+
+  test("Should present valid state if form is valid", async ({ page }) => {
+    await page.getByTestId("name").fill(faker.string.alphanumeric(7));
+    await expect(page.getByTestId("name-error-status")).not.toBeVisible();
+
+    await page.getByTestId("email").fill(faker.internet.email());
+    await expect(page.getByTestId("email-error-status")).not.toBeVisible();
+
+    const password = faker.internet.password();
+
+    await page.getByTestId("password").fill(password);
+    await expect(page.getByTestId("password-error-status")).not.toBeVisible();
+
+    await page.getByTestId("confirmPassword").fill(password);
+    await expect(page.getByTestId("confirmPassword-error-status")).not.toBeVisible();
+
+    await expect(page.getByTestId("submit-button")).toBeEnabled();
+    await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
+  });
 });
