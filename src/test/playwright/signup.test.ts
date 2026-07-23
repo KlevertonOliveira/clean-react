@@ -97,4 +97,21 @@ test.describe("SignUp", () => {
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
     expect(page.url()).toEqual(`${baseURL}/signup`);
   });
+
+  test("Should present UnexpectedError if invalid data is returned", async ({ page, baseURL }) => {
+    await page.route("*/**/api/signup", async route => {
+      await route.fulfill({
+        status: 200,
+        json: {
+          invalidProperty: faker.string.uuid()
+        }
+      });
+    });
+
+    await simulateValidSubmit(page);
+
+    await expect(page.getByTestId("formErrorMessage")).toBeVisible();
+    await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
+    expect(page.url()).toEqual(`${baseURL}/signup`);
+  });
 });
