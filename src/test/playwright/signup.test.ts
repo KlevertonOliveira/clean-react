@@ -135,10 +135,10 @@ test.describe("SignUp", () => {
   });
 
   test("Should prevent multiple submits", async ({ page }) => {
-    let signUpCallCount = 0;
+    let signUpCallsCount = 0;
 
     await page.route("*/**/api/signup", async route => {
-      signUpCallCount++;
+      signUpCallsCount++;
       await route.fulfill({
         status: 200,
         json: { accessToken: faker.string.uuid() }
@@ -148,6 +148,27 @@ test.describe("SignUp", () => {
     await populateFieldsCorrectly(page);
     await page.getByTestId("submit-button").dblclick();
 
-    expect(signUpCallCount).toBe(1);
+    expect(signUpCallsCount).toBe(1);
   });
+
+  test("Should prevent submit if form is invalid", async ({ page, baseURL }) => {
+    let signUpCallsCount = 0;
+
+    await page.route("*/**/api/signup", async route => {
+      signUpCallsCount++;
+      await route.fulfill({
+        status: 200,
+        json: { accessToken: faker.string.uuid() }
+      });
+    });
+
+    await page.getByTestId("email").fill(faker.internet.email());
+
+    await expect(page.getByTestId("submit-button")).toBeDisabled();
+    await page.getByTestId("email").press("Enter");
+
+    expect(signUpCallsCount).toBe(0);
+    expect(page.url()).toEqual(`${baseURL}/signup`);
+  });
+
 });
