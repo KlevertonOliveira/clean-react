@@ -2,13 +2,16 @@
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
 
-const simulateValidSubmit = async (page: Page) => {
+const populateFieldsCorrectly = async (page: Page) => {
   const password = faker.internet.password();
   await page.getByTestId("name").fill(faker.string.alphanumeric(7));
   await page.getByTestId("email").fill(faker.internet.email());
   await page.getByTestId("password").fill(password);
   await page.getByTestId("confirmPassword").fill(password);
+};
 
+const simulateValidSubmit = async (page: Page) => {
+  populateFieldsCorrectly(page);
   await expect(page.getByTestId("submit-button")).toBeEnabled();
   await page.getByTestId("submit-button").click();
 };
@@ -129,5 +132,22 @@ test.describe("SignUp", () => {
 
     expect(await page.localStorage.getItem('accessToken')).toEqual(accessToken);
     expect(page.url()).toEqual(`${baseURL}/`);
+  });
+
+  test("Should prevent multiple submits", async ({ page }) => {
+    let signUpCallCount = 0;
+
+    await page.route("*/**/api/signup", async route => {
+      signUpCallCount++;
+      await route.fulfill({
+        status: 200,
+        json: { accessToken: faker.string.uuid() }
+      });
+    });
+
+    await populateFieldsCorrectly(page);
+    await page.getByTestId("submit-button").dblclick();
+
+    expect(signUpCallCount).toBe(1);
   });
 });
