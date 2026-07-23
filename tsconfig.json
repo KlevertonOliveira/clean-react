@@ -15,5 +15,13 @@
       "@testing-library/jest-dom",
       "node"
     ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "build",
+      ".next",
+      "out",
+      "coverage"
+    ]
   },
 }

@@ -31,5 +31,13 @@
   "include": [
     "vite.config.ts",
     "playwright.config.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    "out",
+    "coverage"
   ]
 }
