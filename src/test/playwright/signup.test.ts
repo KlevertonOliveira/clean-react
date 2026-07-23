@@ -84,4 +84,17 @@ test.describe("SignUp", () => {
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Email already in use!");
     expect(page.url()).toEqual(`${baseURL}/signup`);
   });
+
+  test("Should present UnexpectedError on default error cases", async ({
+    page, baseURL }) => {
+    await page.route('*/**/api/signup', async route => {
+      await route.fulfill({ status: faker.helpers.arrayElement([400, 500]) });
+    });
+
+    await simulateValidSubmit(page);
+
+    await expect(page.getByTestId("formErrorMessage")).toBeVisible();
+    await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
+    expect(page.url()).toEqual(`${baseURL}/signup`);
+  });
 });
