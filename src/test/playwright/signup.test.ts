@@ -114,4 +114,20 @@ test.describe("SignUp", () => {
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
     expect(page.url()).toEqual(`${baseURL}/signup`);
   });
+
+  test("Should present save access token if valid credentials are provided", async ({ page, baseURL }) => {
+    const accessToken = faker.string.uuid();
+
+    await page.route("*/**/api/signup", async route => {
+      await route.fulfill({
+        status: 200,
+        json: { accessToken }
+      });
+    });
+
+    await simulateValidSubmit(page);
+
+    expect(await page.localStorage.getItem('accessToken')).toEqual(accessToken);
+    expect(page.url()).toEqual(`${baseURL}/`);
+  });
 });
