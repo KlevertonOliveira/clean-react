@@ -6,3 +6,9 @@ export const mockUnexpectedError = async (page: Page, url: string) => {
     await route.fulfill({ status: faker.helpers.arrayElement([400, 500]) });
   });
 };
+
+export const mockInvalidCredentialsError = async (page: Page, url: string) => {
+  await page.route(`*/**/api${url}`, async route => {
+    await route.fulfill({ status: 401 });
+  });
+};
