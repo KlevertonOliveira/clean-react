@@ -21,3 +21,19 @@ export const mockInvalidReturnData = async (page: Page, url: string) => {
     });
   });
 };
+
+export const mockSuccessfulRequest = async ({ page, url, response, callback }: {
+  page: Page,
+  url: string,
+  response: any,
+  callback?: VoidFunction;
+}) => {
+  await page.route(`*/**/api${url}`, async route => {
+    if (callback) { callback(); }
+
+    await route.fulfill({
+      status: 200,
+      json: response
+    });
+  });
+};

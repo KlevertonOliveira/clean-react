@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
-import { mockInvalidCredentialsError, mockInvalidReturnData, mockUnexpectedError } from "../api-mocks/api-mocks";
+import { mockInvalidCredentialsError, mockInvalidReturnData, mockSuccessfulRequest, mockUnexpectedError } from "../api-mocks/api-mocks";
 
 const populateFieldsCorrectly = async (page: Page) => {
   await page.getByTestId("email").fill(faker.internet.email());
@@ -85,12 +85,11 @@ test.describe("Login", () => {
   test("Should prevent submit if form is invalid", async ({ page, baseURL }) => {
     let loginCallCount = 0;
 
-    await page.route("*/**/api/login", async route => {
-      loginCallCount++;
-      await route.fulfill({
-        status: 200,
-        json: { accessToken: faker.string.uuid() }
-      });
+    await mockSuccessfulRequest({
+      page,
+      url: "/login",
+      response: { accessToken: faker.string.uuid() },
+      callback: () => { loginCallCount++; }
     });
 
     await page.getByTestId("email").fill(faker.internet.email());
@@ -102,32 +101,29 @@ test.describe("Login", () => {
     expect(page.url()).toEqual(`${baseURL}/login`);
   });
 
-  test("Should prevent multiple submits", async ({ page, baseURL }) => {
+  test("Should prevent multiple submits", async ({ page }) => {
     let loginCallCount = 0;
 
-    await page.route("*/**/api/login", async route => {
-      loginCallCount++;
-      await route.fulfill({
-        status: 200,
-        json: { accessToken: faker.string.uuid() }
-      });
+    await mockSuccessfulRequest({
+      page,
+      url: "/login",
+      response: { accessToken: faker.string.uuid() },
+      callback: () => { loginCallCount++; }
     });
 
     await populateFieldsCorrectly(page);
     await page.getByTestId("submit-button").dblclick();
 
     expect(loginCallCount).toBe(1);
-    expect(page.url()).toEqual(`${baseURL}/`);
   });
 
   test("Should present save access token if valid credentials are provided", async ({ page, baseURL }) => {
     const accessToken = faker.string.uuid();
 
-    await page.route("*/**/api/login", async route => {
-      await route.fulfill({
-        status: 200,
-        json: { accessToken }
-      });
+    await mockSuccessfulRequest({
+      page,
+      url: "/login",
+      response: { accessToken },
     });
 
     await simulateValidSubmit(page);

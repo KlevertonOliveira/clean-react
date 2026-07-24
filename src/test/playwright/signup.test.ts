@@ -1,7 +1,7 @@
 
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
-import { mockInvalidReturnData, mockUnexpectedError } from "../api-mocks/api-mocks";
+import { mockInvalidReturnData, mockSuccessfulRequest, mockUnexpectedError } from "../api-mocks/api-mocks";
 
 const populateFieldsCorrectly = async (page: Page) => {
   const password = faker.internet.password();
@@ -89,8 +89,7 @@ test.describe("SignUp", () => {
     expect(page.url()).toEqual(`${baseURL}/signup`);
   });
 
-  test("Should present UnexpectedError on default error cases", async ({
-    page, baseURL }) => {
+  test("Should present UnexpectedError on default error cases", async ({ page, baseURL }) => {
     await mockUnexpectedError(page, "/signup");
 
     await simulateValidSubmit(page);
@@ -113,11 +112,10 @@ test.describe("SignUp", () => {
   test("Should present save access token if valid credentials are provided", async ({ page, baseURL }) => {
     const accessToken = faker.string.uuid();
 
-    await page.route("*/**/api/signup", async route => {
-      await route.fulfill({
-        status: 200,
-        json: { accessToken }
-      });
+    await mockSuccessfulRequest({
+      page,
+      url: "/signup",
+      response: { accessToken },
     });
 
     await simulateValidSubmit(page);
@@ -129,12 +127,11 @@ test.describe("SignUp", () => {
   test("Should prevent multiple submits", async ({ page }) => {
     let signUpCallsCount = 0;
 
-    await page.route("*/**/api/signup", async route => {
-      signUpCallsCount++;
-      await route.fulfill({
-        status: 200,
-        json: { accessToken: faker.string.uuid() }
-      });
+    await mockSuccessfulRequest({
+      page,
+      url: "/signup",
+      response: { accessToken: faker.string.uuid() },
+      callback: () => { signUpCallsCount++; }
     });
 
     await populateFieldsCorrectly(page);
@@ -146,12 +143,11 @@ test.describe("SignUp", () => {
   test("Should prevent submit if form is invalid", async ({ page, baseURL }) => {
     let signUpCallsCount = 0;
 
-    await page.route("*/**/api/signup", async route => {
-      signUpCallsCount++;
-      await route.fulfill({
-        status: 200,
-        json: { accessToken: faker.string.uuid() }
-      });
+    await mockSuccessfulRequest({
+      page,
+      url: "/signup",
+      response: { accessToken: faker.string.uuid() },
+      callback: () => { signUpCallsCount++; }
     });
 
     await page.getByTestId("email").fill(faker.internet.email());
