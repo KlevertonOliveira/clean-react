@@ -1,5 +1,17 @@
 import { faker } from "@faker-js/faker";
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+const populateFieldsCorrectly = async (page: Page) => {
+  await page.getByTestId("email").fill(faker.internet.email());
+  await page.getByTestId("password").fill(faker.internet.password());
+};
+
+const simulateValidSubmit = async (page: Page) => {
+  populateFieldsCorrectly(page);
+  await expect(page.getByTestId("submit-button")).toBeEnabled();
+  await page.getByTestId("submit-button").click();
+};
+
 test.describe("Login", () => {
 
   test.beforeEach(async ({ page, baseURL }) => {
@@ -30,10 +42,9 @@ test.describe("Login", () => {
   });
 
   test("Should present valid state if form is valid", async ({ page }) => {
-    await page.getByTestId("email").fill(faker.internet.email());
-    await expect(page.getByTestId("email-error-status")).not.toBeVisible();
+    await populateFieldsCorrectly(page);
 
-    await page.getByTestId("password").fill(faker.internet.password());
+    await expect(page.getByTestId("email-error-status")).not.toBeVisible();
     await expect(page.getByTestId("password-error-status")).not.toBeVisible();
 
     await expect(page.getByTestId("submit-button")).toBeEnabled();
@@ -46,9 +57,7 @@ test.describe("Login", () => {
       await route.fulfill({ status: 400 });
     });
 
-    await page.getByTestId("email").fill(faker.internet.email());
-    await page.getByTestId("password").fill(faker.internet.password());
-    await page.getByTestId("submit-button").click();
+    await simulateValidSubmit(page);
 
     await expect(page.getByTestId("formErrorMessage")).toBeVisible();
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
@@ -61,9 +70,7 @@ test.describe("Login", () => {
       await route.fulfill({ status: 401 });
     });
 
-    await page.getByTestId("email").fill(faker.internet.email());
-    await page.getByTestId("password").fill(faker.internet.password());
-    await page.getByTestId("submit-button").click();
+    await simulateValidSubmit(page);
 
     await expect(page.getByTestId("formErrorMessage")).toBeVisible();
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Invalid credentials");
@@ -80,9 +87,7 @@ test.describe("Login", () => {
       });
     });
 
-    await page.getByTestId("email").fill(faker.internet.email());
-    await page.getByTestId("password").fill(faker.internet.password());
-    await page.getByTestId("password").press("Enter");
+    await simulateValidSubmit(page);
 
     await expect(page.getByTestId("formErrorMessage")).toBeVisible();
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
@@ -120,8 +125,7 @@ test.describe("Login", () => {
       });
     });
 
-    await page.getByTestId("email").fill(faker.internet.email());
-    await page.getByTestId("password").fill(faker.internet.password());
+    await populateFieldsCorrectly(page);
     await page.getByTestId("submit-button").dblclick();
 
     expect(loginCallCount).toBe(1);
@@ -138,11 +142,9 @@ test.describe("Login", () => {
       });
     });
 
-    await page.getByTestId("email").fill(faker.internet.email());
-    await page.getByTestId("password").fill(faker.internet.password());
-    await page.getByTestId("submit-button").click();
+    await simulateValidSubmit(page);
 
-    expect(page.url()).toEqual(`${baseURL}/`);
     expect(await page.localStorage.getItem('accessToken')).toEqual(accessToken);
+    expect(page.url()).toEqual(`${baseURL}/`);
   });
 });
