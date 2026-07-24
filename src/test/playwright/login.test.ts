@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
+import { mockUnexpectedError } from "../api-mocks/api-mocks";
 
 const populateFieldsCorrectly = async (page: Page) => {
   await page.getByTestId("email").fill(faker.internet.email());
@@ -51,19 +52,6 @@ test.describe("Login", () => {
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
   });
 
-  test("Should present UnexpectedError on 400", async ({
-    page, baseURL }) => {
-    await page.route('*/**/api/login', async route => {
-      await route.fulfill({ status: 400 });
-    });
-
-    await simulateValidSubmit(page);
-
-    await expect(page.getByTestId("formErrorMessage")).toBeVisible();
-    await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
-    expect(page.url()).toEqual(`${baseURL}/login`);
-  });
-
   test("Should present InvalidCredentialsError on 401", async ({
     page, baseURL }) => {
     await page.route('*/**/api/login', async route => {
@@ -74,6 +62,15 @@ test.describe("Login", () => {
 
     await expect(page.getByTestId("formErrorMessage")).toBeVisible();
     await expect(page.getByTestId("formErrorMessage")).toHaveText("Invalid credentials");
+    expect(page.url()).toEqual(`${baseURL}/login`);
+  });
+
+  test("Should present UnexpectedError on default error cases", async ({ page, baseURL }) => {
+    await mockUnexpectedError(page, "/login");
+    await simulateValidSubmit(page);
+
+    await expect(page.getByTestId("formErrorMessage")).toBeVisible();
+    await expect(page.getByTestId("formErrorMessage")).toHaveText("Something went wrong. Try again later.");
     expect(page.url()).toEqual(`${baseURL}/login`);
   });
 

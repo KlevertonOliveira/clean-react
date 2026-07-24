@@ -1,6 +1,7 @@
 
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
+import { mockUnexpectedError } from "../api-mocks/api-mocks";
 
 const populateFieldsCorrectly = async (page: Page) => {
   const password = faker.internet.password();
@@ -90,9 +91,7 @@ test.describe("SignUp", () => {
 
   test("Should present UnexpectedError on default error cases", async ({
     page, baseURL }) => {
-    await page.route('*/**/api/signup', async route => {
-      await route.fulfill({ status: faker.helpers.arrayElement([400, 500]) });
-    });
+    await mockUnexpectedError(page, "/signup");
 
     await simulateValidSubmit(page);
 
