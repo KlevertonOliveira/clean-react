@@ -1,7 +1,7 @@
 
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
-import { mockInvalidReturnData, mockSuccessfulRequest, mockUnexpectedError } from "../api-mocks/api-mocks";
+import { mockEmailInUseError, mockInvalidReturnData, mockSuccessfulRequest, mockUnexpectedError } from "../api-mocks/api-mocks";
 
 const populateFieldsCorrectly = async (page: Page) => {
   const password = faker.internet.password();
@@ -76,11 +76,8 @@ test.describe("SignUp", () => {
     await expect(page.getByTestId("formErrorMessage")).not.toBeVisible();
   });
 
-  test("Should present EmailInUserError on 403", async ({
-    page, baseURL }) => {
-    await page.route('*/**/api/signup', async route => {
-      await route.fulfill({ status: 403 });
-    });
+  test("Should present EmailInUserError on 403", async ({ page, baseURL }) => {
+    await mockEmailInUseError(page, "/signup");
 
     await simulateValidSubmit(page);
 

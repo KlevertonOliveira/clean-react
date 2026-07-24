@@ -13,6 +13,12 @@ export const mockInvalidCredentialsError = async (page: Page, url: string) => {
   });
 };
 
+export const mockEmailInUseError = async (page: Page, url: string) => {
+  await page.route(`*/**/api${url}`, async route => {
+    await route.fulfill({ status: 403 });
+  });
+};
+
 export const mockInvalidReturnData = async (page: Page, url: string) => {
   await page.route(`*/**/api${url}`, async route => {
     await route.fulfill({
