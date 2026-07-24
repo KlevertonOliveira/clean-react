@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
-import { mockInvalidCredentialsError, mockUnexpectedError } from "../api-mocks/api-mocks";
+import { mockInvalidCredentialsError, mockInvalidReturnData, mockUnexpectedError } from "../api-mocks/api-mocks";
 
 const populateFieldsCorrectly = async (page: Page) => {
   await page.getByTestId("email").fill(faker.internet.email());
@@ -54,7 +54,7 @@ test.describe("Login", () => {
 
   test("Should present InvalidCredentialsError on 401", async ({
     page, baseURL }) => {
-    mockInvalidCredentialsError(page, "/login");
+    await mockInvalidCredentialsError(page, "/login");
 
     await simulateValidSubmit(page);
 
@@ -73,14 +73,7 @@ test.describe("Login", () => {
   });
 
   test("Should present UnexpectedError if invalid data is returned", async ({ page, baseURL }) => {
-    await page.route("*/**/api/login", async route => {
-      await route.fulfill({
-        status: 200,
-        json: {
-          invalidProperty: faker.string.uuid()
-        }
-      });
-    });
+    await mockInvalidReturnData(page, "/login");
 
     await simulateValidSubmit(page);
 

@@ -1,7 +1,7 @@
 
 import { faker } from "@faker-js/faker";
 import { test, expect, type Page } from "@playwright/test";
-import { mockUnexpectedError } from "../api-mocks/api-mocks";
+import { mockInvalidReturnData, mockUnexpectedError } from "../api-mocks/api-mocks";
 
 const populateFieldsCorrectly = async (page: Page) => {
   const password = faker.internet.password();
@@ -101,14 +101,7 @@ test.describe("SignUp", () => {
   });
 
   test("Should present UnexpectedError if invalid data is returned", async ({ page, baseURL }) => {
-    await page.route("*/**/api/signup", async route => {
-      await route.fulfill({
-        status: 200,
-        json: {
-          invalidProperty: faker.string.uuid()
-        }
-      });
-    });
+    await mockInvalidReturnData(page, "/signup");
 
     await simulateValidSubmit(page);
 
