@@ -1,10 +1,12 @@
+type SurveyAnswer = {
+  answer: string;
+  image?: string;
+};
+
 export type SurveyModel = {
   id: string;
   question: string;
-  answers: [{
-    image?: string;
-    answer: string;
-  }],
+  answers: SurveyAnswer[],
   date: Date;
   didAnswer: boolean;
 };
