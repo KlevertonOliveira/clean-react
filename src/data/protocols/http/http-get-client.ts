@@ -4,6 +4,6 @@ export type HttpGetParams = {
   url: string;
 };
 
-export interface HttpGetClient<ResponseType> {
-  get(params: HttpGetParams): Promise<HttpResponse<ResponseType>>;
+export interface HttpGetClient<ResponseBody> {
+  get(params: HttpGetParams): Promise<HttpResponse<ResponseBody>>;
 }

@@ -17,22 +17,20 @@ export const mockPostRequest = (): HttpPostParams<AuthenticationParams> => ({
   }
 });
 
-
-export class HttpPostClientSpy<BodyType, ResponseType> implements HttpPostClient<BodyType, ResponseType> {
+export class HttpPostClientSpy<RequestBody, ResponseBody> implements HttpPostClient<RequestBody, ResponseBody> {
   url?: string;
-  body?: BodyType;
-  response: HttpResponse<ResponseType> = {
+  body?: RequestBody;
+  response: HttpResponse<ResponseBody> = {
     statusCode: HttpStatusCode.ok
   };
 
-  async post(params: HttpPostParams<BodyType>): Promise<HttpResponse<ResponseType>> {
+  async post(params: HttpPostParams<RequestBody>): Promise<HttpResponse<ResponseBody>> {
     this.url = params.url;
     this.body = params.body;
 
     return Promise.resolve(this.response);
   }
 }
-
 export class HttpGetClientSpy<ResponseType> implements HttpGetClient<ResponseType> {
   url!: string;
   response: HttpResponse<ResponseType> = {

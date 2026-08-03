@@ -1,11 +1,8 @@
 import type { HttpPostClient, HttpPostParams, HttpResponse } from '@/data/protocols/http';
-import type { AccountModel } from "@/domain/models";
-import type { AuthenticationParams } from "@/domain/usecases";
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 
-export class AxiosHttpClient implements HttpPostClient<AuthenticationParams, AccountModel> {
-
-  async post(params: HttpPostParams<AuthenticationParams>): Promise<HttpResponse<AccountModel>> {
+export class AxiosHttpClient<RequestBody, ResponseBody> implements HttpPostClient<RequestBody, ResponseBody> {
+  async post(params: HttpPostParams<RequestBody>): Promise<HttpResponse<ResponseBody>> {
     let axiosResponse: AxiosResponse;
 
     try {

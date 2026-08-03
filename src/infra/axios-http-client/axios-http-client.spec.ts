@@ -8,7 +8,7 @@ import { mockPostRequest } from '@/data/test/mock-http';
 vi.mock('axios');
 
 type SutTypes = {
-  sut: AxiosHttpClient;
+  sut: AxiosHttpClient<unknown, unknown>;
   mockedAxios: MockedFunction<AxiosStatic>;
 };
 
@@ -20,7 +20,7 @@ const makeSut = (): SutTypes => {
 };
 
 describe('AxiosHttpClient', () => {
-  describe('post', () => {
+  describe('POST', () => {
     test('Should call axios with correct values', async () => {
       const request = mockPostRequest();
       const { sut, mockedAxios } = makeSut();
