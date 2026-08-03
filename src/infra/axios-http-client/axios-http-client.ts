@@ -6,7 +6,6 @@ export class AxiosHttpClient<RequestBody, ResponseBody> implements
   HttpGetClient<ResponseBody> {
   async post(params: HttpPostParams<RequestBody>): Promise<HttpResponse<ResponseBody>> {
     let axiosResponse: AxiosResponse;
-
     try {
       axiosResponse = await axios.post(params.url, params.body) as AxiosResponse;
     }
@@ -14,15 +13,11 @@ export class AxiosHttpClient<RequestBody, ResponseBody> implements
       axiosResponse = (error as AxiosError).response as AxiosResponse;
     }
 
-    return {
-      statusCode: axiosResponse.status,
-      body: axiosResponse.data
-    };
+    return this.adapt(axiosResponse);
   }
 
   async get(params: HttpGetParams): Promise<HttpResponse<ResponseBody>> {
     let axiosResponse: AxiosResponse;
-
     try {
       axiosResponse = await axios.get(params.url) as AxiosResponse;
     }
@@ -30,6 +25,10 @@ export class AxiosHttpClient<RequestBody, ResponseBody> implements
       axiosResponse = (error as AxiosError).response as AxiosResponse;
     }
 
+    return this.adapt(axiosResponse);
+  }
+
+  private adapt(axiosResponse: AxiosResponse): HttpResponse<ResponseBody> {
     return {
       statusCode: axiosResponse.status,
       body: axiosResponse.data
