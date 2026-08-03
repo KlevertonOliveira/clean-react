@@ -21,7 +21,14 @@ export class AxiosHttpClient<RequestBody, ResponseBody> implements
   }
 
   async get(params: HttpGetParams): Promise<HttpResponse<ResponseBody>> {
-    const axiosResponse = await axios.get(params.url) as AxiosResponse;
+    let axiosResponse: AxiosResponse;
+
+    try {
+      axiosResponse = await axios.get(params.url) as AxiosResponse;
+    }
+    catch (error) {
+      axiosResponse = (error as AxiosError).response as AxiosResponse;
+    }
 
     return {
       statusCode: axiosResponse.status,
