@@ -21,7 +21,7 @@ const makeSut = (): SutTypes => {
 
 describe('AxiosHttpClient', () => {
   describe('POST', () => {
-    test('Should call axios with correct values', async () => {
+    test('Should call axios.post with correct values', async () => {
       const request = mockPostRequest();
       const { sut, mockedAxios } = makeSut();
 
@@ -54,13 +54,25 @@ describe('AxiosHttpClient', () => {
   });
 
   describe('GET', () => {
-    test('Should call axios with correct values', async () => {
+    test('Should call axios.get with correct values', async () => {
       const request = mockGetRequest();
       const { sut, mockedAxios } = makeSut();
 
       await sut.get(request);
 
       expect(mockedAxios.get).toHaveBeenCalledWith(request.url);
+    });
+
+    test('Should return correct response on axios.get', async () => {
+      const { sut, mockedAxios } = makeSut();
+
+      const httpResponse = await sut.get(mockGetRequest());
+      const mockedAxiosResponse = await mockedAxios.get.mock.results[0].value;
+
+      expect(httpResponse).toEqual({
+        statusCode: mockedAxiosResponse.status,
+        body: mockedAxiosResponse.body,
+      });
     });
   });
 });
