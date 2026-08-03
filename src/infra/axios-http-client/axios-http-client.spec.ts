@@ -3,7 +3,7 @@ import type { AxiosStatic } from 'axios';
 
 import { AxiosHttpClient } from './axios-http-client';
 import { mockAxios, mockHttpResponse } from '@/infra/test';
-import { mockPostRequest } from '@/data/test/mock-http';
+import { mockGetRequest, mockPostRequest } from '@/data/test/mock-http';
 
 vi.mock('axios');
 
@@ -50,6 +50,17 @@ describe('AxiosHttpClient', () => {
 
       const promise = sut.post(mockPostRequest());
       expect(promise).toEqual(mockedAxios.post.mock.results[0].value);
+    });
+  });
+
+  describe('GET', () => {
+    test('Should call axios with correct values', async () => {
+      const request = mockGetRequest();
+      const { sut, mockedAxios } = makeSut();
+
+      await sut.get(request);
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(request.url);
     });
   });
 });

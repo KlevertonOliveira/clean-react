@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import type { AuthenticationParams } from "@/domain/usecases";
 import {
   type HttpGetClient,
   type HttpGetParams,
@@ -9,12 +8,16 @@ import {
   HttpStatusCode,
 } from '@/data/protocols/http';
 
-export const mockPostRequest = (): HttpPostParams<AuthenticationParams> => ({
+export const mockPostRequest = (): HttpPostParams<unknown> => ({
   url: faker.internet.url(),
   body: {
     email: faker.internet.exampleEmail(),
     password: faker.internet.password(),
   }
+});
+
+export const mockGetRequest = (): HttpGetParams => ({
+  url: faker.internet.url(),
 });
 
 export class HttpPostClientSpy<RequestBody, ResponseBody> implements HttpPostClient<RequestBody, ResponseBody> {
