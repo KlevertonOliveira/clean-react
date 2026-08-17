@@ -9,13 +9,15 @@ function LoginHeader(): JSX.Element {
       className="bg-primary border-t-40 border-solid border-primaryDark
       flex flex-col items-center"
     >
-      <Logo />
+      <div className="mt-10">
+        <Logo />
+      </div>
 
       <h1 className="text-white mt-4 mb-10 mx-0">
         4Dev - Surveys for programmers
       </h1>
     </header>
-  )
+  );
 }
 
 export default memo(LoginHeader);
