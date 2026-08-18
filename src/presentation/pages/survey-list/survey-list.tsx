@@ -1,7 +1,6 @@
 {/* eslint-disable no-constant-condition */ }
 
-import { CheckIcon, QuestionMarkIcon } from "@phosphor-icons/react";
-import { Header, Footer } from "@/presentation/components";
+import { Footer, Header, Icon, IconName } from "@/presentation/components";
 
 export default function SurveyListPage() {
   return (
@@ -23,11 +22,11 @@ export default function SurveyListPage() {
             bg-no-repeat 
             bg-size-[100%_100%]"
             >
-              <div className={`absolute -top-2 -right-2 text-white rounded-full 
+              <Icon
+                iconName={true ? IconName.questionMark : IconName.checkMark}
+                className={`absolute -top-2 -right-2 text-white rounded-full 
                 ${true ? "bg-red-600" : "bg-green-600"}`}
-              >
-                {true ? <QuestionMarkIcon size={32} /> : <CheckIcon size={32} />}
-              </div>
+              />
 
               <time className="flex flex-col bg-primaryLight text-white rounded-lg ml-4 w-15 h-25 items-center self-center justify-center shrink-0">
                 <span className="text-4xl font-bold">22</span>
