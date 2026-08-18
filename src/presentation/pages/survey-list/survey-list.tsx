@@ -1,25 +1,16 @@
 {/* eslint-disable no-constant-condition */ }
 
-import { Logo } from "@/presentation/components";
-import Footer from "@/presentation/components/footer/footer";
 import { CheckIcon, QuestionMarkIcon } from "@phosphor-icons/react";
+import { Header, Footer } from "@/presentation/components";
 
 export default function SurveyListPage() {
   return (
-    <div className="flex flex-col min-h-screen h-full justify-between bg-disabled-background">
+    <div className="flex flex-col min-h-screen h-full justify-between bg-disabled-background"
+    >
+      <Header />
 
-      <header className="flex justify-center bg-primary border-t-40 border-primaryDark">
-        <div className="flex justify-between max-w-200 grow py-5 px-10">
-          <Logo className="w-15 self-center" />
-
-          <div className="self-center flex flex-col justify-center items-end text-white">
-            <span className="mb-2 font-medium">João</span>
-            <a href="/initial" className="hover:underline">Logout</a>
-          </div>
-        </div>
-      </header>
-
-      <div className="flex flex-col self-center max-w-200 grow w-full px-5 py-10">
+      <div className="flex flex-col self-center max-w-200 grow w-full px-5 py-10"
+      >
         <h2 className="text-primaryDark text-xl font-bold uppercase mb-6">
           Surveys
         </h2>
