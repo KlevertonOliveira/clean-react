@@ -6,7 +6,7 @@ import { Logo } from "@/presentation/components";
 function LoginHeader(): JSX.Element {
   return (
     <header
-      className="bg-primary border-t-40 border-solid border-primaryDark
+      className="bg-primary border-t-20 sm:border-t-40 border-solid border-primaryDark
       flex flex-col items-center"
     >
       <div className="mt-10">

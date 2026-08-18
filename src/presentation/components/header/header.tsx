@@ -2,7 +2,7 @@ import { Logo } from "@/presentation/components";
 
 export default function Header() {
   return (
-    <header className="flex justify-center bg-primary border-t-40 border-primaryDark"
+    <header className="flex justify-center bg-primary border-t-20 sm:border-t-40 border-primaryDark"
     >
       <div className="flex justify-between max-w-200 grow py-5 px-10">
         <Logo className="w-15 self-center" />

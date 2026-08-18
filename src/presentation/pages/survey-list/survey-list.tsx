@@ -12,7 +12,9 @@ export default function SurveyListPage() {
           Surveys
         </h2>
 
-        <ul className="flex flex-wrap justify-between">
+        <ul className="flex flex-col sm:flex-row flex-wrap justify-between">
+          <SurveyItem />
+          <SurveyItem />
           <SurveyItem />
         </ul>
       </div>
