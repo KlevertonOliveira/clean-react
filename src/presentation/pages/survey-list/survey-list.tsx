@@ -1,5 +1,6 @@
 import { Footer, Header } from "@/presentation/components";
 import SurveyItem from "./components/survey-item";
+import SurveyItemSkeleton from "./components/survey-item-skeleton";
 
 export default function SurveyListPage() {
   return (
@@ -14,8 +15,7 @@ export default function SurveyListPage() {
 
         <ul className="flex flex-col sm:flex-row flex-wrap justify-between">
           <SurveyItem />
-          <SurveyItem />
-          <SurveyItem />
+          <SurveyItemSkeleton />
         </ul>
       </div>
 
