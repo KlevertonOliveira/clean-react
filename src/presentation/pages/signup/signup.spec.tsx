@@ -1,5 +1,5 @@
 import { cleanup, render, type RenderResult } from "@testing-library/react";
-import { Helper, SaveAccessTokenMock, ValidationSpy } from "@/presentation/test";
+import { Helper, UpdateCurrentAccountMock, ValidationSpy } from "@/presentation/test";
 import { AddAccountSpy } from "@/presentation/test/mock-add-account";
 import userEvent from "@testing-library/user-event";
 import { faker } from "@faker-js/faker";
@@ -12,7 +12,7 @@ import { RouterProvider } from "@tanstack/react-router";
 type SutTypes = {
   sut: RenderResult;
   addAccountSpy: AddAccountSpy,
-  saveAccessTokenMock: SaveAccessTokenMock;
+  updateCurrentAccountMock: UpdateCurrentAccountMock;
   router: ReturnType<typeof generateTestRouter>;
 };
 
@@ -25,7 +25,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   validationSpy.errorMessage = params?.validationError ?? "";
 
   const addAccountSpy = new AddAccountSpy();
-  const saveAccessTokenMock = new SaveAccessTokenMock();
+  const updateCurrentAccountMock = new UpdateCurrentAccountMock();
 
   const router = generateTestRouter({
     initialLocation: "/signup",
@@ -33,7 +33,7 @@ const makeSut = (params?: SutParams): SutTypes => {
       <SignUpPage
         validation={validationSpy}
         addAccount={addAccountSpy}
-        saveAccessToken={saveAccessTokenMock}
+        updateCurrentAccount={updateCurrentAccountMock}
       />
     )
   });
@@ -43,7 +43,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   return {
     sut,
     addAccountSpy,
-    saveAccessTokenMock,
+    updateCurrentAccountMock,
     router
   };
 };
@@ -231,22 +231,22 @@ describe("SignUpPage", () => {
     expect(formErrorMessage).toHaveTextContent(error.message);
   });
 
-  test("Should call SaveAccessToken and redirect to main page on success", async () => {
-    const { sut, addAccountSpy, saveAccessTokenMock, router } = makeSut();
+  test("Should call UpdateCurrentAccount and redirect to main page on success", async () => {
+    const { sut, addAccountSpy, updateCurrentAccountMock, router } = makeSut();
     await sut.findByTestId("signup-form");
 
     await simulateValidSubmit(sut);
 
-    expect(saveAccessTokenMock.accessToken).toBe(addAccountSpy.account.accessToken);
+    expect(updateCurrentAccountMock.account).toEqual(addAccountSpy.account);
     expect(router.state.location.pathname).toBe("/");
   });
 
-  test("Should present error if SaveAccessToken fails", async () => {
-    const { sut, saveAccessTokenMock } = makeSut();
+  test("Should present error if UpdateCurrentAccount fails", async () => {
+    const { sut, updateCurrentAccountMock } = makeSut();
     await sut.findByTestId("signup-form");
 
     const error = new Error(faker.lorem.word());
-    vi.spyOn(saveAccessTokenMock, "save").mockRejectedValue(error);
+    vi.spyOn(updateCurrentAccountMock, "save").mockRejectedValue(error);
 
     await simulateValidSubmit(sut);
 

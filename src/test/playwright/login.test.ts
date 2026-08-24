@@ -117,18 +117,21 @@ test.describe("Login", () => {
     expect(loginCallCount).toBe(1);
   });
 
-  test("Should present save access token if valid credentials are provided", async ({ page, baseURL }) => {
-    const accessToken = faker.string.uuid();
+  test("Should present correct account infomation if valid credentials are provided", async ({ page, baseURL }) => {
+    const account = {
+      accessToken: faker.string.uuid(),
+      name: faker.person.firstName()
+    };
 
     await mockSuccessfulRequest({
       page,
       url: "/login",
-      response: { accessToken },
+      response: account,
     });
 
     await simulateValidSubmit(page);
 
-    expect(await page.localStorage.getItem('accessToken')).toEqual(accessToken);
+    expect(await page.localStorage.getItem('account')).toBe(JSON.stringify(account));
     expect(page.url()).toEqual(`${baseURL}/`);
   });
 });

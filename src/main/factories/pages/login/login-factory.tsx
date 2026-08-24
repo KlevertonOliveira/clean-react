@@ -1,6 +1,6 @@
 import { LoginPage } from "@/presentation/pages";
 import { makeRemoteAuthentication } from "@/main/factories/usecases/authentication/remote-authentication-factory";
-import { makeLocalSaveAccessToken } from "@/main/factories/usecases/save-access-token/save-access-token-factory";
+import { makeLocalUpdateCurrentAccount } from "@/main/factories/usecases/update-current-account/local-update-current-account-factory";
 import { makeLoginValidation } from "./login-validation-factory";
 
 export default function MakeLogin(): React.JSX.Element {
@@ -8,7 +8,7 @@ export default function MakeLogin(): React.JSX.Element {
     <LoginPage
       authentication={makeRemoteAuthentication()}
       validation={makeLoginValidation()}
-      saveAccessToken={makeLocalSaveAccessToken()}
+      updateCurrentAccount={makeLocalUpdateCurrentAccount()}
     />
   );
 }

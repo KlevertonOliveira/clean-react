@@ -4,7 +4,7 @@ import { Footer, Input, Spinner } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
 import React, { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
-import type { Authentication, SaveAccessToken } from "@/domain/usecases";
+import type { Authentication, UpdateCurrentAccount } from "@/domain/usecases";
 import { Link } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -24,13 +24,13 @@ type FormState = {
 type Props = {
   validation: Validation;
   authentication: Authentication;
-  saveAccessToken: SaveAccessToken;
+  updateCurrentAccount: UpdateCurrentAccount;
 };
 
 export default function LoginPage({
   validation,
   authentication,
-  saveAccessToken
+  updateCurrentAccount
 }: Props): JSX.Element {
   const navigate = useNavigate();
 
@@ -71,7 +71,7 @@ export default function LoginPage({
       setState((prev) => ({ ...prev, isLoading: true }));
 
       const account = await authentication.auth(state.fields);
-      await saveAccessToken.save(account.accessToken);
+      await updateCurrentAccount.save(account);
 
       navigate({ to: '/' });
     }

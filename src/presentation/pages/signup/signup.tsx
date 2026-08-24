@@ -4,7 +4,7 @@ import { Footer, Input, Spinner } from "@/presentation/components";
 import { Header } from "@/presentation/pages/login/components";
 import { useState } from "react";
 import type { Validation } from "@/presentation/protocols/validation";
-import type { AddAccount, SaveAccessToken } from "@/domain/usecases";
+import type { AddAccount, UpdateCurrentAccount } from "@/domain/usecases";
 import { Link, useNavigate } from "@tanstack/react-router";
 
 type FormState = {
@@ -27,13 +27,13 @@ type FormState = {
 type Props = {
   validation: Validation;
   addAccount: AddAccount;
-  saveAccessToken: SaveAccessToken;
+  updateCurrentAccount: UpdateCurrentAccount;
 };
 
 export default function SignUpPage({
   validation,
   addAccount,
-  saveAccessToken,
+  updateCurrentAccount,
 }: Props): JSX.Element {
   const navigate = useNavigate();
 
@@ -88,7 +88,7 @@ export default function SignUpPage({
       setState((prev) => ({ ...prev, isLoading: true }));
 
       const account = await addAccount.add(state.fields);
-      await saveAccessToken.save(account.accessToken);
+      await updateCurrentAccount.save(account);
 
       navigate({ to: '/' });
     }
