@@ -11,11 +11,11 @@ describe('LocalStorageAdapter', () => {
   test('Should call localStorage with correct values', () => {
     const sut = makeSut();
     const key = faker.database.column();
-    const value = faker.lorem.word();
+    const value = { data: faker.string.alphanumeric(6) };
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
 
     sut.set(key, value);
 
-    expect(setItemSpy).toHaveBeenCalledWith(key, String(value));
+    expect(setItemSpy).toHaveBeenCalledWith(key, JSON.stringify(value));
   });
 });
