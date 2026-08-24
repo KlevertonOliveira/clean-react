@@ -28,7 +28,7 @@ describe('LocalUpdateCurrentAccount', () => {
 
   test('Should throw if SetStorage throws', async () => {
     const { sut, setStorageMock } = makeSut();
-    vi.spyOn(setStorageMock, 'set').mockRejectedValueOnce(new Error());
+    vi.spyOn(setStorageMock, 'set').mockImplementation(() => { throw new Error(); });
 
     const promise = sut.save(mockAccountModel());
     await expect(promise).rejects.toThrow(new Error());
