@@ -1,4 +1,4 @@
-import type { SetStorage } from "@/data/protocols/cache/set-storage";
+import type { SetStorage } from "@/data/protocols/cache";
 import { UnexpectedError } from "@/domain/errors";
 import type { AccountModel } from "@/domain/models";
 import type { UpdateCurrentAccount } from "@/domain/usecases";
