@@ -32,4 +32,10 @@ describe('LocalStorageAdapter', () => {
     expect(getItemSpy).toHaveBeenCalledWith(key);
     expect(obj).toEqual(value);
   });
+
+  test('Should return null when localStorage.getItem is called with non-existent key', () => {
+    const sut = makeSut();
+    const obj = sut.get(faker.database.column());
+    expect(obj).toEqual(null);
+  });
 });
