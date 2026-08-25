@@ -8,7 +8,7 @@ describe('LocalStorageAdapter', () => {
     localStorage.clear();
   });
 
-  test('Should call localStorage with correct values', () => {
+  test('Should call localStorage.setItem with correct values', () => {
     const sut = makeSut();
     const key = faker.database.column();
     const value = { data: faker.string.alphanumeric(6) };
@@ -17,5 +17,19 @@ describe('LocalStorageAdapter', () => {
     sut.set(key, value);
 
     expect(setItemSpy).toHaveBeenCalledWith(key, JSON.stringify(value));
+  });
+
+  test('Should call localStorage.getItem with correct value', () => {
+    const sut = makeSut();
+    const key = faker.database.column();
+    const value = { data: faker.string.alphanumeric(6) };
+
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockReturnValueOnce(JSON.stringify(value));
+
+    const obj = sut.get(key);
+
+    expect(getItemSpy).toHaveBeenCalledWith(key);
+    expect(obj).toEqual(value);
   });
 });
