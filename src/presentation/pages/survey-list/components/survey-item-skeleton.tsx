@@ -12,7 +12,6 @@ export default function SurveyItemSkeleton() {
       </div>
 
       <div className="bg-disabled-background rounded-b-lg  h-10" />
-
     </li>
   );
 }
