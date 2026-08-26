@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { render, type RenderResult, cleanup } from "@testing-library/react";
+import { render, cleanup, screen } from "@testing-library/react";
 import { userEvent } from '@testing-library/user-event';
 import { LoginPage } from "@/presentation/pages";
 import { ValidationSpy, AuthenticationSpy, UpdateCurrentAccountMock, Helper } from "@/presentation/test";
@@ -9,7 +9,6 @@ import { RouterProvider } from "@tanstack/react-router";
 import { generateTestRouter } from "@/utils/test/test-router-utils";
 
 type SutTypes = {
-  sut: RenderResult;
   validationSpy: ValidationSpy;
   authenticationSpy: AuthenticationSpy;
   updateCurrentAccountMock: UpdateCurrentAccountMock;
@@ -38,10 +37,9 @@ const makeSut = (params?: SutParams): SutTypes => {
     )
   });
 
-  const sut = render(<RouterProvider router={router} />);
+  render(<RouterProvider router={router} />);
 
   return {
-    sut,
     validationSpy,
     authenticationSpy,
     updateCurrentAccountMock,
@@ -50,16 +48,15 @@ const makeSut = (params?: SutParams): SutTypes => {
 };
 
 const simulateValidSubmit = async (
-  sut: RenderResult,
   email = faker.internet.email(),
   password = faker.internet.password()
 ): Promise<void> => {
   const user = userEvent.setup();
 
-  await Helper.populateField(sut, "email", email);
-  await Helper.populateField(sut, "password", password);
+  await Helper.populateField("email", email);
+  await Helper.populateField("password", password);
 
-  const submitButton = sut.getByTestId('submit-button');
+  const submitButton = screen.getByTestId('submit-button');
   await user.click(submitButton);
 };
 
@@ -68,42 +65,42 @@ describe('Login Component', () => {
 
   test('Should start with initial state', async () => {
     const validationError = "Required field";
-    const { sut } = makeSut({ validationError });
-    await sut.findByTestId('login-form');
+    makeSut({ validationError });
+    await screen.findByTestId('login-form');
 
-    const spinner = sut.queryByTestId('spinner');
+    const spinner = screen.queryByTestId('spinner');
     expect(spinner).not.toBeInTheDocument();
 
-    const errorMessage = sut.queryByTestId('errorMessage');
+    const errorMessage = screen.queryByTestId('errorMessage');
     expect(errorMessage).not.toBeInTheDocument();
 
-    const submitButton = sut.getByTestId('submit-button');
+    const submitButton = screen.getByTestId('submit-button');
     expect(submitButton).toBeDisabled();
 
     const fields = ["email", "password"];
 
     for (const field of fields) {
-      Helper.testErrorStatusForField(sut, field, validationError);
+      Helper.testErrorStatusForField(field, validationError);
     }
   });
 
   test('Should call Validation with correct email', async () => {
-    const { sut, validationSpy } = makeSut();
-    await sut.findByTestId('login-form');
+    const { validationSpy } = makeSut();
+    await screen.findByTestId('login-form');
 
     const email = faker.internet.email();
-    await Helper.populateField(sut, "email", email);
+    await Helper.populateField("email", email);
 
     expect(validationSpy.fieldName).toBe('email');
     expect(validationSpy.fieldValue).toBe(email);
   });
 
   test('Should call Validation with correct password', async () => {
-    const { sut, validationSpy } = makeSut();
-    await sut.findByTestId('login-form');
+    const { validationSpy } = makeSut();
+    await screen.findByTestId('login-form');
 
     const password = faker.internet.password();
-    await Helper.populateField(sut, "password", password);
+    await Helper.populateField("password", password);
 
     expect(validationSpy.fieldName).toBe('password');
     expect(validationSpy.fieldValue).toBe(password);
@@ -111,151 +108,151 @@ describe('Login Component', () => {
 
   test('Should show email error if Validation fails', async () => {
     const validationError = faker.lorem.words();
-    const { sut } = makeSut({ validationError });
-    await sut.findByTestId('login-form');
+    makeSut({ validationError });
+    await screen.findByTestId('login-form');
 
-    await Helper.populateField(sut, "email", faker.internet.email());
+    await Helper.populateField("email", faker.internet.email());
 
-    Helper.testErrorStatusForField(sut, "email", validationError);
+    Helper.testErrorStatusForField("email", validationError);
   });
 
   test('Should show password error if Validation fails', async () => {
     const validationError = faker.lorem.words();
-    const { sut } = makeSut({ validationError });
-    await sut.findByTestId('login-form');
+    makeSut({ validationError });
+    await screen.findByTestId('login-form');
 
-    await Helper.populateField(sut, "password", faker.internet.password());
+    await Helper.populateField("password", faker.internet.password());
 
-    Helper.testErrorStatusForField(sut, "password", validationError);
+    Helper.testErrorStatusForField("password", validationError);
   });
 
   test('Should show valid email state if Validation succeeds', async () => {
-    const { sut } = makeSut();
-    await sut.findByTestId('login-form');
+    makeSut();
+    await screen.findByTestId('login-form');
 
-    await Helper.populateField(sut, "email", faker.internet.email());
+    await Helper.populateField("email", faker.internet.email());
 
-    expect(sut.queryByTestId("email-status")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("email-status")).not.toBeInTheDocument();
   });
 
   test('Should show valid password state if Validation succeeds', async () => {
-    const { sut } = makeSut();
-    await sut.findByTestId('login-form');
+    makeSut();
+    await screen.findByTestId('login-form');
 
-    await Helper.populateField(sut, "password", faker.internet.password());
-    expect(sut.queryByTestId("email-status")).not.toBeInTheDocument();
+    await Helper.populateField("password", faker.internet.password());
+    expect(screen.queryByTestId("email-status")).not.toBeInTheDocument();
   });
 
   test('Should enable submit button if form is valid', async () => {
-    const { sut } = makeSut();
-    await sut.findByTestId('login-form');
+    makeSut();
+    await screen.findByTestId('login-form');
 
-    await Helper.populateField(sut, "email", faker.internet.email());
-    await Helper.populateField(sut, "password", faker.internet.password());
+    await Helper.populateField("email", faker.internet.email());
+    await Helper.populateField("password", faker.internet.password());
 
-    const submitButton = sut.getByTestId('submit-button');
+    const submitButton = screen.getByTestId('submit-button');
     expect(submitButton).toBeEnabled();
   });
 
   test('Should show spinner on submit', async () => {
-    const { sut } = makeSut();
-    await sut.findByTestId('login-form');
+    makeSut();
+    await screen.findByTestId('login-form');
 
-    await simulateValidSubmit(sut);
+    await simulateValidSubmit();
 
-    const spinner = sut.getByTestId('spinner');
+    const spinner = screen.getByTestId('spinner');
     expect(spinner).toBeInTheDocument();
   });
 
   test('Should call Authentication with correct credentials', async () => {
-    const { sut, authenticationSpy } = makeSut();
-    await sut.findByTestId('login-form');
+    const { authenticationSpy } = makeSut();
+    await screen.findByTestId('login-form');
 
     const email = faker.internet.email();
     const password = faker.internet.password();
 
-    await simulateValidSubmit(sut, email, password);
+    await simulateValidSubmit(email, password);
 
     expect(authenticationSpy.params).toEqual({ email, password });
   });
 
   test('Should call Authentication only once', async () => {
-    const { sut, authenticationSpy } = makeSut();
-    await sut.findByTestId('login-form');
+    const { authenticationSpy } = makeSut();
+    await screen.findByTestId('login-form');
 
-    await simulateValidSubmit(sut);
-    await simulateValidSubmit(sut);
+    await simulateValidSubmit();
+    await simulateValidSubmit();
 
     expect(authenticationSpy.callsCount).toBe(1);
   });
 
   test('Should not call Authentication if form is invalid', async () => {
     const validationError = faker.lorem.words();
-    const { sut, authenticationSpy } = makeSut({ validationError });
-    await sut.findByTestId('login-form');
+    const { authenticationSpy } = makeSut({ validationError });
+    await screen.findByTestId('login-form');
 
-    await Helper.populateField(sut, "email", faker.internet.email());
+    await Helper.populateField("email", faker.internet.email());
 
     const user = userEvent.setup();
-    const submitButton = sut.getByTestId('submit-button');
+    const submitButton = screen.getByTestId('submit-button');
     await user.click(submitButton);
 
     expect(authenticationSpy.callsCount).toBe(0);
   });
 
   test('Should present errors if Authentication fails', async () => {
-    const { sut, authenticationSpy } = makeSut();
-    await sut.findByTestId('login-form');
+    const { authenticationSpy } = makeSut();
+    await screen.findByTestId('login-form');
 
     const error = new InvalidCredentialsError();
     vi.spyOn(authenticationSpy, 'auth').mockRejectedValue(error);
 
-    await simulateValidSubmit(sut);
+    await simulateValidSubmit();
 
-    const formErrorMessage = sut.getByTestId('formErrorMessage');
+    const formErrorMessage = screen.getByTestId('formErrorMessage');
     expect(formErrorMessage).toBeInTheDocument();
     expect(formErrorMessage).toHaveTextContent(error.message);
   });
 
   test('Should call SaveAccessToken on Authentication success', async () => {
-    const { sut, authenticationSpy, updateCurrentAccountMock } = makeSut();
-    await sut.findByTestId('login-form');
+    const { authenticationSpy, updateCurrentAccountMock } = makeSut();
+    await screen.findByTestId('login-form');
 
-    await simulateValidSubmit(sut);
+    await simulateValidSubmit();
 
     expect(updateCurrentAccountMock.account).toEqual(authenticationSpy.account);
   });
 
   test('Should present error if SaveAccessToken fails', async () => {
-    const { sut, updateCurrentAccountMock } = makeSut();
-    await sut.findByTestId('login-form');
+    const { updateCurrentAccountMock } = makeSut();
+    await screen.findByTestId('login-form');
 
     const error = new Error('Something went wrong!');
     vi.spyOn(updateCurrentAccountMock, 'save').mockRejectedValue(error);
 
-    await simulateValidSubmit(sut);
+    await simulateValidSubmit();
 
-    const formErrorMessage = sut.getByTestId('formErrorMessage');
+    const formErrorMessage = screen.getByTestId('formErrorMessage');
     expect(formErrorMessage).toBeInTheDocument();
     expect(formErrorMessage).toHaveTextContent(error.message);
   });
 
   test('Should redirect to /signup upon Link interaction', async () => {
-    const { sut, router } = makeSut();
+    const { router } = makeSut();
     const user = userEvent.setup();
-    await sut.findByTestId('login-form');
+    await screen.findByTestId('login-form');
 
-    const signupLink = sut.getByTestId('signup-link');
+    const signupLink = screen.getByTestId('signup-link');
     await user.click(signupLink);
 
     expect(router.state.location.pathname).toBe('/signup');
   });
 
   test('Should navigate to main page on authentication success', async () => {
-    const { sut, router } = makeSut();
-    await sut.findByTestId('login-form');
+    const { router } = makeSut();
+    await screen.findByTestId('login-form');
 
-    await simulateValidSubmit(sut);
+    await simulateValidSubmit();
 
     expect(router.state.location.pathname).toBe('/');
   });
