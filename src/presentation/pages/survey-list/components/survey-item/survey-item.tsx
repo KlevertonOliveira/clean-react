@@ -1,19 +1,19 @@
-{/* eslint-disable no-constant-condition */ }
 import type { SurveyModel } from "@/domain/models";
 import { Icon, IconName } from "@/presentation/components";
+import type React from "react";
 
 type Props = {
   survey: SurveyModel;
 };
 
-export default function SurveyItem({ survey }: Props) {
+export default function SurveyItem({ survey }: Props): React.JSX.Element {
   return (
     <li className="h-60 bg-white flex flex-col justify-between rounded-lg sm:basis-[48%] mb-6 shadow relative">
 
       <Icon
-        iconName={true ? IconName.questionMark : IconName.checkMark}
+        iconName={!survey.didAnswer ? IconName.questionMark : IconName.checkMark}
         className={`absolute -top-2 -right-2 text-white rounded-full 
-           ${true ? "bg-red-600" : "bg-green-600"}`}
+           ${!survey.didAnswer ? "bg-red-600" : "bg-green-600"}`}
       />
 
       <div className="flex justify-between rounded-lg grow
@@ -23,7 +23,7 @@ export default function SurveyItem({ survey }: Props) {
       >
         <time className="flex flex-col bg-primaryLight text-white rounded-lg ml-4 w-15 h-25 items-center self-center justify-center shrink-0">
           <span className="text-4xl font-bold" data-testid="day">
-            {survey.date.getDate()}
+            {survey.date.getDate().toString().padStart(2, "0")}
           </span>
 
           <span className="lowercase m-0 mb-1" data-testid="month">

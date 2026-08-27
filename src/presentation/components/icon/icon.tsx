@@ -24,7 +24,7 @@ export default function Icon({
       )}
 
       {iconName === IconName.checkMark && (
-        <CheckIcon size={size} data-testid="question-mark-icon" />
+        <CheckIcon size={size} data-testid="check-icon" />
       )}
     </div>
   );
