@@ -19,8 +19,13 @@ export default function Icon({
 
   return (
     <div className={twMerge(className)}>
-      {iconName === IconName.questionMark && <QuestionMarkIcon size={size} />}
-      {iconName === IconName.checkMark && <CheckIcon size={size} />}
+      {iconName === IconName.questionMark && (
+        <QuestionMarkIcon size={size} data-testid="question-mark-icon" />
+      )}
+
+      {iconName === IconName.checkMark && (
+        <CheckIcon size={size} data-testid="question-mark-icon" />
+      )}
     </div>
   );
 }

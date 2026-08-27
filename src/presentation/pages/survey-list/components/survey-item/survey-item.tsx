@@ -1,7 +1,12 @@
 {/* eslint-disable no-constant-condition */ }
+import type { SurveyModel } from "@/domain/models";
 import { Icon, IconName } from "@/presentation/components";
 
-export default function SurveyItem() {
+type Props = {
+  survey: SurveyModel;
+};
+
+export default function SurveyItem({ survey }: Props) {
   return (
     <li className="h-60 bg-white flex flex-col justify-between rounded-lg sm:basis-[48%] mb-6 shadow relative">
 
@@ -17,13 +22,21 @@ export default function SurveyItem() {
         bg-size-[100%_100%]"
       >
         <time className="flex flex-col bg-primaryLight text-white rounded-lg ml-4 w-15 h-25 items-center self-center justify-center shrink-0">
-          <span className="text-4xl font-bold">22</span>
-          <span className="lowercase m-0 mb-1">Mar</span>
-          <span className="">2020</span>
+          <span className="text-4xl font-bold" data-testid="day">
+            {survey.date.getDate()}
+          </span>
+
+          <span className="lowercase m-0 mb-1" data-testid="month">
+            {survey.date.toLocaleDateString("en-US", { month: "short" })}
+          </span>
+
+          <span data-testid="year">
+            {survey.date.getFullYear()}
+          </span>
         </time>
 
-        <p className="text-xl m-6 self-center grow">
-          What&apos;s your favorite web framework?
+        <p className="text-xl m-6 self-center grow" data-testid="question">
+          {survey.question}
         </p>
       </div>
 
