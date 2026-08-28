@@ -13,6 +13,7 @@ export default function SurveyListPage({ loadSurveyList }: Props) {
     isFetching,
     error,
     isError,
+    refetch
   } = useQuery({
     queryKey: ["load-survey-list"],
     queryFn: async () => loadSurveyList.loadAll(),
@@ -40,7 +41,12 @@ export default function SurveyListPage({ loadSurveyList }: Props) {
           </SurveyList>
         )}
 
-        {(!isFetching && isError) && <SurveyFetchError error={error} />}
+        {(!isFetching && isError) && (
+          <SurveyFetchError
+            error={error}
+            onRetry={() => refetch()}
+          />
+        )}
       </div>
 
       <Footer />
