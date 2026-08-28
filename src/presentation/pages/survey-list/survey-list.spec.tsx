@@ -5,6 +5,7 @@ import type { SurveyModel } from "@/domain/models";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { mockSurveyList } from "@/domain/test";
 import { UnexpectedError } from "@/domain/errors";
+import userEvent from "@testing-library/user-event";
 
 class LoadSurveyListSpy implements LoadSurveyList {
   callsCount = 0;
@@ -70,5 +71,21 @@ describe('SurveyList Component', () => {
 
     expect(await screen.findByTestId("error-message")).toHaveTextContent(error.message);
     expect(screen.queryByTestId("survey-list")).not.toBeInTheDocument();
+  });
+
+  test("Should call LoadSurveyList on refetch", async () => {
+    const loadSurveyListSpy = new LoadSurveyListSpy();
+    vi.spyOn(loadSurveyListSpy, "loadAll").mockRejectedValueOnce(new UnexpectedError());
+
+    makeSut(loadSurveyListSpy);
+
+    expect(await screen.findByTestId("error-message")).toBeInTheDocument();
+
+    userEvent.setup();
+    await userEvent.click(screen.getByTestId("retry-button"));
+
+    // With the error mocked above, the callsCount was never updated since the loadAll failed.
+    // Thus, as the retry button calls loadAll again (now without error), the callsCount should be 1
+    expect(loadSurveyListSpy.callsCount).toBe(1);
   });
 });
