@@ -1,26 +1,13 @@
-import { render, screen } from "@testing-library/react";
-import { SurveyListPage } from "@/presentation/pages";
-import type { LoadSurveyList } from "@/domain/usecases";
-import type { SurveyModel } from "@/domain/models";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { mockSurveyList } from "@/domain/test";
-import { UnexpectedError } from "@/domain/errors";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-
-class LoadSurveyListSpy implements LoadSurveyList {
-  callsCount = 0;
-  surveys = mockSurveyList();
-
-  async loadAll(): Promise<SurveyModel[]> {
-    this.callsCount++;
-    return this.surveys;
-  }
-}
+import { UnexpectedError } from "@/domain/errors";
+import { SurveyListPage } from "@/presentation/pages";
+import { LoadSurveyListSpy } from "@/presentation/test";
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy;
 };
-
 
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
   const queryClient = new QueryClient({
