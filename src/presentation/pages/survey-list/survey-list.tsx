@@ -1,16 +1,18 @@
-import { Footer, Header } from "@/presentation/components";
-import SurveyItemSkeleton from "./components/survey-item-skeleton/survey-item-skeleton";
-import type { LoadSurveyList } from "@/domain/usecases";
 import { useQuery } from "@tanstack/react-query";
+import { Footer, Header } from "@/presentation/components";
+import type { LoadSurveyList } from "@/domain/usecases";
+import SurveyItemSkeleton from "./components/survey-item-skeleton/survey-item-skeleton";
+import SurveyItem from "./components/survey-item/survey-item";
 
 type Props = {
   loadSurveyList: LoadSurveyList;
 };
 
 export default function SurveyListPage({ loadSurveyList }: Props) {
-  useQuery({
+  const { data: surveyList, isFetching } = useQuery({
     queryKey: ["load-survey-list"],
-    queryFn: async () => loadSurveyList.loadAll()
+    queryFn: async () => loadSurveyList.loadAll(),
+    initialData: [],
   });
 
   return (
@@ -23,7 +25,10 @@ export default function SurveyListPage({ loadSurveyList }: Props) {
         </h2>
 
         <ul className="flex flex-col sm:flex-row flex-wrap justify-between" data-testid="survey-list">
-          {Array(4).fill("").map((_, index) => <SurveyItemSkeleton key={index} />)}
+          {isFetching || surveyList.length === 0
+            ? Array(4).fill("").map((_, index) => <SurveyItemSkeleton key={index} />)
+            : surveyList.map((survey) => <SurveyItem key={survey.id} survey={survey} />)
+          }
         </ul>
       </div>
 

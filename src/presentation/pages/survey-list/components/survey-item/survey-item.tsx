@@ -8,7 +8,10 @@ type Props = {
 
 export default function SurveyItem({ survey }: Props): React.JSX.Element {
   return (
-    <li className="h-60 bg-white flex flex-col justify-between rounded-lg sm:basis-[48%] mb-6 shadow relative">
+    <li
+      className="h-60 bg-white flex flex-col justify-between rounded-lg sm:basis-[48%] mb-6 shadow relative"
+      data-testid="survey-item"
+    >
 
       <Icon
         iconName={!survey.didAnswer ? IconName.questionMark : IconName.checkMark}
