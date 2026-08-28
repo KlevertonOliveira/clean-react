@@ -9,7 +9,12 @@ type Props = {
 };
 
 export default function SurveyListPage({ loadSurveyList }: Props) {
-  const { data: surveyList, isFetching } = useQuery({
+  const {
+    data: surveyList,
+    isFetching,
+    error,
+    isError,
+  } = useQuery({
     queryKey: ["load-survey-list"],
     queryFn: async () => loadSurveyList.loadAll(),
     initialData: [],
@@ -24,12 +29,21 @@ export default function SurveyListPage({ loadSurveyList }: Props) {
           Surveys
         </h2>
 
-        <ul className="flex flex-col sm:flex-row flex-wrap justify-between" data-testid="survey-list">
-          {isFetching || surveyList.length === 0
-            ? Array(4).fill("").map((_, index) => <SurveyItemSkeleton key={index} />)
-            : surveyList.map((survey) => <SurveyItem key={survey.id} survey={survey} />)
-          }
-        </ul>
+        {(!isFetching && isError) && (
+          <div>
+            <span data-testid="error-message">{error.message}</span>
+            <button>Refetch</button>
+          </div>
+        )}
+
+        {(isFetching || surveyList.length > 0) && (
+          <ul className="flex flex-col sm:flex-row flex-wrap justify-between" data-testid="survey-list">
+            {isFetching
+              ? Array(4).fill("").map((_, index) => <SurveyItemSkeleton key={index} />)
+              : surveyList.map((survey) => <SurveyItem key={survey.id} survey={survey} />)
+            }
+          </ul>
+        )}
       </div>
 
       <Footer />
