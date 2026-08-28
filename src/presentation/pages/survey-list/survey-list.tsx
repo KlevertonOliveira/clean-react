@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { Footer, Header } from "@/presentation/components";
 import type { LoadSurveyList } from "@/domain/usecases";
-import SurveyItemSkeleton from "./components/survey-item-skeleton/survey-item-skeleton";
-import SurveyItem from "./components/survey-item/survey-item";
+import { Footer, Header } from "@/presentation/components";
+import { SurveyItem, SurveyItemSkeleton, SurveyList, SurveyFetchError } from "./components/";
 
 type Props = {
   loadSurveyList: LoadSurveyList;
@@ -29,21 +28,19 @@ export default function SurveyListPage({ loadSurveyList }: Props) {
           Surveys
         </h2>
 
-        {(!isFetching && isError) && (
-          <div>
-            <span data-testid="error-message">{error.message}</span>
-            <button>Refetch</button>
-          </div>
+        {isFetching && (
+          <SurveyList>
+            {Array(4).fill("").map((_, index) => <SurveyItemSkeleton key={index} />)}
+          </SurveyList>
         )}
 
-        {(isFetching || surveyList.length > 0) && (
-          <ul className="flex flex-col sm:flex-row flex-wrap justify-between" data-testid="survey-list">
-            {isFetching
-              ? Array(4).fill("").map((_, index) => <SurveyItemSkeleton key={index} />)
-              : surveyList.map((survey) => <SurveyItem key={survey.id} survey={survey} />)
-            }
-          </ul>
+        {(!isFetching && surveyList.length > 0) && (
+          <SurveyList>
+            {surveyList.map((survey) => <SurveyItem key={survey.id} survey={survey} />)}
+          </SurveyList>
         )}
+
+        {(!isFetching && isError) && <SurveyFetchError error={error} />}
       </div>
 
       <Footer />
