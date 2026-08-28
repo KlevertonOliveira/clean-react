@@ -1,7 +1,18 @@
 import { Footer, Header } from "@/presentation/components";
-import SurveyItemSkeleton from "./components/survey-item-skeleton";
+import SurveyItemSkeleton from "./components/survey-item-skeleton/survey-item-skeleton";
+import type { LoadSurveyList } from "@/domain/usecases";
+import { useQuery } from "@tanstack/react-query";
 
-export default function SurveyListPage() {
+type Props = {
+  loadSurveyList: LoadSurveyList;
+};
+
+export default function SurveyListPage({ loadSurveyList }: Props) {
+  useQuery({
+    queryKey: ["load-survey-list"],
+    queryFn: async () => loadSurveyList.loadAll()
+  });
+
   return (
     <div className="flex flex-col min-h-screen h-full justify-between bg-disabled-background">
       <Header />
