@@ -37,8 +37,7 @@ describe('SurveyList Component', () => {
   test('Should present 4 skeleton items on start', () => {
     makeSut();
 
-    const surveyList = screen.getByTestId("survey-list");
-    const listItems = surveyList.getElementsByTagName("li");
+    const listItems = screen.getAllByTestId("skeleton-survey-item");
 
     expect(listItems).toHaveLength(4);
   });

@@ -1,6 +1,9 @@
 export default function SurveyItemSkeleton() {
   return (
-    <li className="h-60 bg-white flex flex-col justify-between rounded-lg sm:basis-[48%] mb-6 shadow-md animate-pulse">
+    <li
+      className="h-60 bg-white flex flex-col justify-between rounded-lg sm:basis-[48%] mb-6 shadow-md animate-pulse"
+      data-testid="skeleton-survey-item"
+    >
       <div className="flex gap-8 grow items-center">
         <div className="bg-disabled-background rounded-lg ml-4 w-20 h-25" />
 
