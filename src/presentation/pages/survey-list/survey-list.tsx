@@ -18,6 +18,7 @@ export default function SurveyListPage({ loadSurveyList }: Props) {
     queryKey: ["load-survey-list"],
     queryFn: async () => loadSurveyList.loadAll(),
     initialData: [],
+    refetchOnWindowFocus: false,
   });
 
   return (
