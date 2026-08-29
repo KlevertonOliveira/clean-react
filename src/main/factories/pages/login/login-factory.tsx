@@ -1,6 +1,5 @@
 import { LoginPage } from "@/presentation/pages";
-import { makeRemoteAuthentication } from "@/main/factories/usecases/authentication/remote-authentication-factory";
-import { makeLocalUpdateCurrentAccount } from "@/main/factories/usecases/update-current-account/local-update-current-account-factory";
+import { makeLocalUpdateCurrentAccount, makeRemoteAuthentication } from "@/main/factories/usecases";
 import { makeLoginValidation } from "./login-validation-factory";
 
 export default function MakeLogin(): React.JSX.Element {

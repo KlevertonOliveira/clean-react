@@ -1,6 +1,5 @@
-import { SurveyListPage } from "@/presentation/pages";
+import MakeSurveyListPage from "@/main/factories/pages/survey-list/survey-list-factory";
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import type React from "react";
 
 export const Route = createFileRoute('/')({
   beforeLoad: ({ context }) => {
@@ -8,9 +7,5 @@ export const Route = createFileRoute('/')({
       throw redirect({ to: "/login" });
     }
   },
-  component: RouteComponent,
+  component: MakeSurveyListPage,
 });
-
-function RouteComponent(): React.JSX.Element {
-  return <SurveyListPage />;
-}
