@@ -5,9 +5,22 @@ type Props = {
 
 export default function SurveyFetchError({ error, onRetry }: Props) {
   return (
-    <div>
-      <span data-testid="error-message">{error.message}</span>
-      <button data-testid="retry-button" onClick={onRetry}>Retry</button>
+    <div className="flex flex-col gap-4 items-center text-center bg-white p-10 rounded-lg shadow-md">
+
+      <span
+        data-testid="error-message"
+        className="text-lg"
+      >
+        {error.message}
+      </span>
+
+      <button
+        data-testid="retry-button"
+        onClick={onRetry}
+        className="px-4"
+      >
+        Retry
+      </button>
     </div>
   );
 }
