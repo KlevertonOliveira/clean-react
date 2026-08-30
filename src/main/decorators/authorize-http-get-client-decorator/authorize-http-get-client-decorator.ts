@@ -1,14 +1,14 @@
 
 import type { GetStorage } from "@/data/protocols/cache";
-import type { HttpGetClient, HttpGetParams } from "@/data/protocols/http";
+import type { HttpGetClient, HttpGetParams, HttpResponse } from "@/data/protocols/http";
 
-export class AuthorizeHttpGetClientDecorator {
+export class AuthorizeHttpGetClientDecorator implements HttpGetClient<unknown> {
   constructor(
     private readonly getStorage: GetStorage,
     private readonly httpGetClient: HttpGetClient<unknown>
   ) { }
 
-  async get(params: HttpGetParams): Promise<null> {
+  async get(params: HttpGetParams): Promise<HttpResponse<unknown>> {
     const account = this.getStorage.get("account");
 
     if (account?.accessToken) {
@@ -18,7 +18,7 @@ export class AuthorizeHttpGetClientDecorator {
       };
     }
 
-    await this.httpGetClient.get(params);
-    return null;
+    const httpResponse = await this.httpGetClient.get(params);
+    return httpResponse;
   }
 }
