@@ -64,4 +64,23 @@ describe('AuthorizeHttpGetClientDecorator', () => {
       "x-access-token": getStorageSpy.value.accessToken
     });
   });
+
+  test('Should merge access token to headers when GetStorage is valid (original headers not empty)', async () => {
+    const { sut, httpGetClientSpy, getStorageSpy } = makeSut();
+    getStorageSpy.value = mockAccountModel();
+
+    const httpRequest: HttpGetParams = {
+      url: faker.internet.url(),
+      headers: {
+        field: faker.word.words()
+      }
+    };
+
+    await sut.get(httpRequest);
+
+    expect(httpGetClientSpy.headers).toEqual({
+      ...httpRequest.headers,
+      "x-access-token": getStorageSpy.value.accessToken,
+    });
+  });
 });
