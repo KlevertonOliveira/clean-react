@@ -37,12 +37,14 @@ export class HttpPostClientSpy<RequestBody, ResponseBody> implements HttpPostCli
 }
 export class HttpGetClientSpy<ResponseType> implements HttpGetClient<ResponseType> {
   url!: string;
+  headers?: unknown;
   response: HttpResponse<ResponseType> = {
     statusCode: HttpStatusCode.ok
   };
 
   async get(params: HttpGetParams): Promise<HttpResponse<ResponseType>> {
     this.url = params.url;
+    this.headers = params.headers;
     return Promise.resolve(this.response);
   }
 }
