@@ -1,4 +1,5 @@
-import type { SetStorage } from "../protocols/cache";
+import { faker } from "@faker-js/faker";
+import type { GetStorage, SetStorage } from "../protocols/cache";
 
 export class SetStorageMock implements SetStorage {
   key!: string;
@@ -7,5 +8,15 @@ export class SetStorageMock implements SetStorage {
   set(key: string, value: unknown): void {
     this.key = key;
     this.value = value;
+  }
+}
+
+export class GetStorageSpy implements GetStorage {
+  key!: string;
+  value = { data: faker.string.alphanumeric(8) };
+
+  get(key: string): unknown {
+    this.key = key;
+    return this.value;
   }
 }
