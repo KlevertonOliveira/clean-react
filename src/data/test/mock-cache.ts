@@ -13,7 +13,7 @@ export class SetStorageMock implements SetStorage {
 
 export class GetStorageSpy implements GetStorage {
   key!: string;
-  value = { data: faker.string.alphanumeric(8) };
+  value: any = { data: faker.string.alphanumeric(8) };
 
   get(key: string): unknown {
     this.key = key;
