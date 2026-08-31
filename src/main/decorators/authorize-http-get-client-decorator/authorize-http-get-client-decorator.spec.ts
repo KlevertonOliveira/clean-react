@@ -3,7 +3,7 @@ import { GetStorageSpy, HttpGetClientSpy, mockGetRequest } from "@/data/test";
 import { mockAccountModel } from "@/domain/test";
 
 type SutTypes = {
-  sut: AuthorizeHttpGetClientDecorator;
+  sut: AuthorizeHttpGetClientDecorator<unknown>;
   getStorageSpy: GetStorageSpy;
   httpGetClientSpy: HttpGetClientSpy<unknown>;
 };
