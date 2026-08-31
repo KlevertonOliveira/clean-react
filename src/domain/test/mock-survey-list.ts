@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import type { SurveyModel } from "../models";
+import type { SurveyModel } from "@/domain/models";
 
 export const mockSurveyModel = (): SurveyModel => ({
   id: faker.string.uuid(),
