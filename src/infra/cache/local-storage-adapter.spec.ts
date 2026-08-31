@@ -19,6 +19,18 @@ describe('LocalStorageAdapter', () => {
     expect(setItemSpy).toHaveBeenCalledWith(key, JSON.stringify(value));
   });
 
+  test('Should call localStorage.removeItem if value is falsy', () => {
+    const sut = makeSut();
+    const key = faker.database.column();
+
+    const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
+
+
+    sut.set(key, null);
+
+    expect(removeItemSpy).toHaveBeenCalledWith(key);
+  });
+
   test('Should call localStorage.getItem with correct value', () => {
     const sut = makeSut();
     const key = faker.database.column();
