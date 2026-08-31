@@ -1,6 +1,9 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
+import { routeAuth } from "@/utils/route-auth";
+import { generateTestRouter } from "@/utils/test/test-router-utils";
 import { UnexpectedError } from "@/domain/errors";
 import { SurveyListPage } from "@/presentation/pages";
 import { LoadSurveyListSpy } from "@/presentation/test";
@@ -18,9 +21,20 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
     }
   });
 
+  const router = generateTestRouter({
+    initialLocation: '/',
+    rootRoutecomponent: (
+      <SurveyListPage loadSurveyList={loadSurveyListSpy} />
+    ),
+    context: {
+      routeAuth,
+      queryClient: new QueryClient()
+    }
+  });
+
   render(
     <QueryClientProvider client={queryClient}>
-      <SurveyListPage loadSurveyList={loadSurveyListSpy} />
+      <RouterProvider router={router} />
     </QueryClientProvider>
   );
 
@@ -32,13 +46,14 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
 describe('SurveyList Component', () => {
   test('Should present 4 skeleton items on start', async () => {
     makeSut();
-    const listItems = screen.getAllByTestId("skeleton-survey-item");
+    const listItems = await screen.findAllByTestId("skeleton-survey-item");
     expect(listItems).toHaveLength(4);
     expect(screen.queryByTestId("error-message")).not.toBeInTheDocument();
   });
 
-  test('Should call LoadSurveyList', () => {
+  test('Should call LoadSurveyList', async () => {
     const { loadSurveyListSpy } = makeSut();
+    await screen.findByRole("banner");
     expect(loadSurveyListSpy.callsCount).toBe(1);
   });
 
