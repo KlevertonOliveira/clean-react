@@ -1,5 +1,6 @@
-import { getCurrentAccountAdapter } from "@/main/adapters/current-account-adapter";
+import { getCurrentAccountAdapter, setCurrentAccountAdapter } from "@/main/adapters/current-account-adapter";
 
 export const routeAuth = {
-  isAuthenticated: () => Boolean(getCurrentAccountAdapter()?.accessToken)
+  isAuthenticated: () => Boolean(getCurrentAccountAdapter()?.accessToken),
+  logout: () => setCurrentAccountAdapter(null)
 };
