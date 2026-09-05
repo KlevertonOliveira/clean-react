@@ -10,7 +10,7 @@ export class AxiosHttpClient<RequestBody, ResponseBody> implements
       axiosResponse = await axios.post(params.url, params.body) as AxiosResponse;
     }
     catch (error) {
-      axiosResponse = (error as AxiosError).response as AxiosResponse;
+      axiosResponse = (error as AxiosError).request.response as AxiosResponse;
     }
 
     return this.adapt(axiosResponse);
@@ -22,7 +22,7 @@ export class AxiosHttpClient<RequestBody, ResponseBody> implements
       axiosResponse = await axios.get(params.url, { headers: params.headers }) as AxiosResponse;
     }
     catch (error) {
-      axiosResponse = (error as AxiosError).response as AxiosResponse;
+      axiosResponse = (error as AxiosError).request.response as AxiosResponse;
     }
 
     return this.adapt(axiosResponse);
