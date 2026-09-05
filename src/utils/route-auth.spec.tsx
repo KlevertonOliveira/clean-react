@@ -1,13 +1,31 @@
-import { setCurrentAccountAdapter } from "@/main/adapters/current-account-adapter";
 import { routeAuth } from "./route-auth";
+import { mockAccountModel } from "@/domain/test";
+import * as currentAccountAdapter from "@/main/adapters/current-account-adapter";
 
-vi.mock("@/main/adapters/current-account-adapter", () => ({
-  setCurrentAccountAdapter: vi.fn(),
-}));
+describe('RouteAuth', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
 
-test("Should call setCurrentAccountAdapter with null when logout is called", () => {
-  routeAuth.logout();
+  test("Should call setCurrentAccountAdapter with null when logout is called", () => {
+    const setSpy = vi.spyOn(currentAccountAdapter, "setCurrentAccountAdapter");
 
-  expect(setCurrentAccountAdapter).toHaveBeenCalledTimes(1);
-  expect(setCurrentAccountAdapter).toHaveBeenCalledWith(null);
+    routeAuth.logout();
+
+    expect(setSpy).toHaveBeenCalledTimes(1);
+    expect(setSpy).toHaveBeenCalledWith(null);
+  });
+
+  test("Should get correct account information when getAccount is called", () => {
+    const account = mockAccountModel();
+    const getSpy = (vi
+      .spyOn(currentAccountAdapter, "getCurrentAccountAdapter")
+      .mockReturnValue(account)
+    );
+
+    const result = routeAuth.getAccount();
+
+    expect(getSpy).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(account);
+  });
 });
