@@ -7,6 +7,7 @@ import { generateTestRouter } from "@/utils/test/test-router-utils";
 import { UnexpectedError } from "@/domain/errors";
 import { SurveyListPage } from "@/presentation/pages";
 import { LoadSurveyListSpy } from "@/presentation/test";
+import { mockAccountModel } from "@/domain/test";
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy;
@@ -27,7 +28,10 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
       <SurveyListPage loadSurveyList={loadSurveyListSpy} />
     ),
     context: {
-      routeAuth,
+      routeAuth: {
+        ...routeAuth,
+        getAccount: vi.fn().mockReturnValue(mockAccountModel()),
+      },
       queryClient: new QueryClient()
     }
   });

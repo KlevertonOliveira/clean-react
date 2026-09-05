@@ -5,19 +5,25 @@ import { RouterProvider } from "@tanstack/react-router";
 import { routeAuth } from "@/utils/route-auth";
 import { generateTestRouter } from "@/utils/test/test-router-utils";
 import { Header } from "@/presentation/components";
+import { mockAccountModel } from "@/domain/test";
 
 type SutTypes = {
   router: ReturnType<typeof generateTestRouter>;
 };
 
 const logoutMock = vi.fn();
+const getAccountMock = vi.fn();
 
-const makeSut = (): SutTypes => {
+const makeSut = (account = mockAccountModel()): SutTypes => {
   const router = generateTestRouter({
     initialLocation: '/',
     rootRoutecomponent: <Header />,
     context: {
-      routeAuth: { ...routeAuth, logout: logoutMock },
+      routeAuth: {
+        ...routeAuth,
+        logout: logoutMock,
+        getAccount: getAccountMock.mockReturnValue(account),
+      },
       queryClient: new QueryClient()
     }
   });
@@ -40,9 +46,12 @@ describe('Header Component', () => {
     expect(router.state.location.pathname).toBe('/login');
   });
 
-  test("Should correctly display account name", async () => {
-    makeSut();
+  test("Should render username correctly", async () => {
+    const account = mockAccountModel();
+    makeSut(account);
 
     await screen.findByRole("banner");
+
+    expect(screen.getByTestId("username")).toHaveTextContent(account.name);
   });
 });
