@@ -16,7 +16,12 @@ export default function Header() {
         <Logo className="w-15 self-center" />
 
         <div className="self-center flex flex-col justify-center items-end text-white">
-          <span className="mb-2 font-medium">João</span>
+          <span
+            className="mb-2 font-medium"
+            data-testid="username"
+          >
+            {routeAuth.getAccount().name}
+          </span>
 
           <button
             data-testid="logout-button"
