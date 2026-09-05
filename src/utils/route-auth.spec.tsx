@@ -28,4 +28,13 @@ describe('RouteAuth', () => {
     expect(getSpy).toHaveBeenCalledTimes(1);
     expect(result).toEqual(account);
   });
+
+  test("Should return null when no account value is stored", () => {
+    const getSpy = vi.spyOn(currentAccountAdapter, "getCurrentAccountAdapter");
+
+    const result = routeAuth.getAccount();
+
+    expect(getSpy).toHaveBeenCalledTimes(1);
+    expect(result).toBeNull();
+  });
 });
