@@ -31,6 +31,18 @@ describe('RouteAuth', () => {
       expect(getSpy).toHaveBeenCalledTimes(1);
       expect(isAuthenticated).toBeFalsy();
     });
+
+    test("Should return true when valid account information is stored", () => {
+      const getSpy = (vi
+        .spyOn(currentAccountAdapter, "getCurrentAccountAdapter")
+        .mockReturnValue(mockAccountModel())
+      );
+
+      const isAuthenticated = routeAuth.isAuthenticated();
+
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(isAuthenticated).toBeTruthy();
+    });
   });
 
   describe('logout', () => {
