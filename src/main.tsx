@@ -1,34 +1,22 @@
+import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeAuth } from "./utils/route-auth";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { createAuthEventEmitter } from "./infra/auth/auth-event-emitter";
+import { createQueryClient } from "./infra/query-client/query-client";
+import { setupAuthNavigation } from "./presentation/router/auth-navigation/auth-navigation";
+import { createAppRouter } from "./presentation/router/router";
 
-// Import the generated route tree
-import { routeTree } from './routeTree.gen';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const authEventEmitter = createAuthEventEmitter();
+const queryClient = createQueryClient(authEventEmitter);
+const router = createAppRouter();
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false
-    }
-  }
+setupAuthNavigation({
+  router,
+  onLogout: routeAuth.logout,
+  authEventEmitter
 });
-
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  context: {
-    routeAuth,
-  }
-});
-
-// Register the router instance for type safety
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router;
-  }
-}
 
 // Render the app
 const rootElement = document.getElementById('root')!;
