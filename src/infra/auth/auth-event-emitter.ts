@@ -25,3 +25,5 @@ export function createAuthEventEmitter() {
     emit
   };
 }
+
+export type AuthEventEmitter = ReturnType<typeof createAuthEventEmitter>;
