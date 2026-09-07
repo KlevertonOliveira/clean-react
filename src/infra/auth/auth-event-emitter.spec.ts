@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 
-import { createAuthEventEmitter } from './auth-event-emitter';
+import { createAuthEventEmitter, type AuthEvent } from './auth-event-emitter';
 
 describe('AuthEventEmitter', () => {
   test("Should notify a listener when an event is emitted", () => {
@@ -23,5 +23,21 @@ describe('AuthEventEmitter', () => {
     emitter.emit({ type: "forbidden" });
 
     expect(listener).not.toHaveBeenCalled();
+  });
+
+  test("Should notify all listeners registered", () => {
+    const emitter = createAuthEventEmitter();
+
+    const firstListener = vi.fn();
+    const secondListener = vi.fn();
+
+    emitter.on(firstListener);
+    emitter.on(secondListener);
+
+    const event: AuthEvent = { type: "forbidden" };
+    emitter.emit(event);
+
+    expect(firstListener).toHaveBeenCalledWith(event);
+    expect(secondListener).toHaveBeenCalledWith(event);
   });
 });
