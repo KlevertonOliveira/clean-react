@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { QueryClient } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider } from "@tanstack/react-router";
 import { routeAuth } from "@/utils/route-auth";
@@ -24,7 +23,6 @@ const makeSut = (account = mockAccountModel()): SutTypes => {
         logout: logoutMock,
         getAccount: getAccountMock.mockReturnValue(account),
       },
-      queryClient: new QueryClient()
     }
   });
 

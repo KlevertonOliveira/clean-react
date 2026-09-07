@@ -1,27 +1,19 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { routeAuth } from "@/utils/route-auth";
-import { generateTestRouter } from "@/utils/test/test-router-utils";
-import { UnexpectedError } from "@/domain/errors";
 import { SurveyListPage } from "@/presentation/pages";
 import { LoadSurveyListSpy } from "@/presentation/test";
 import { mockAccountModel } from "@/domain/test";
+import { UnexpectedError } from "@/domain/errors";
+import { TestQueryClientProvider, generateTestRouter } from "@/utils/test";
 
 type SutTypes = {
   loadSurveyListSpy: LoadSurveyListSpy;
+  router: ReturnType<typeof generateTestRouter>;
 };
 
 const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false
-      }
-    }
-  });
-
   const router = generateTestRouter({
     initialLocation: '/',
     rootRoutecomponent: (
@@ -32,18 +24,18 @@ const makeSut = (loadSurveyListSpy = new LoadSurveyListSpy()): SutTypes => {
         ...routeAuth,
         getAccount: vi.fn().mockReturnValue(mockAccountModel()),
       },
-      queryClient: new QueryClient()
     }
   });
 
   render(
-    <QueryClientProvider client={queryClient}>
+    <TestQueryClientProvider>
       <RouterProvider router={router} />
-    </QueryClientProvider>
+    </TestQueryClientProvider>
   );
 
   return {
-    loadSurveyListSpy
+    loadSurveyListSpy,
+    router
   };
 };
 
@@ -68,7 +60,7 @@ describe('SurveyList Component', () => {
     expect(screen.queryByTestId("error-message")).not.toBeInTheDocument();
   });
 
-  test("Should render error message on failure", async () => {
+  test("Should render UnexpectedError on failure", async () => {
     const loadSurveyListSpy = new LoadSurveyListSpy();
     const error = new UnexpectedError();
     vi.spyOn(loadSurveyListSpy, "loadAll").mockRejectedValueOnce(error);
