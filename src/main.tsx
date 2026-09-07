@@ -20,7 +20,6 @@ const router = createRouter({
   routeTree,
   context: {
     routeAuth,
-    queryClient
   }
 });
 
