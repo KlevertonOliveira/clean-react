@@ -40,4 +40,20 @@ describe('AuthEventEmitter', () => {
     expect(firstListener).toHaveBeenCalledWith(event);
     expect(secondListener).toHaveBeenCalledWith(event);
   });
+
+  test("Should keep listeners isolated between emitter instances", () => {
+    const firstEmitter = createAuthEventEmitter();
+    const firstListener = vi.fn();
+
+    const secondEmitter = createAuthEventEmitter();
+    const secondListener = vi.fn();
+
+    firstEmitter.on(firstListener);
+    secondEmitter.on(secondListener);
+
+    firstEmitter.emit({ type: "forbidden" });
+
+    expect(firstListener).toHaveBeenCalled();
+    expect(secondListener).not.toHaveBeenCalled();
+  });
 });
