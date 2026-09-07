@@ -8,6 +8,10 @@ export function createAuthEventEmitter() {
 
   function on(listener: AuthEventListener) {
     listeners.add(listener);
+
+    return () => {
+      listeners.delete(listener);
+    };
   };
 
   function emit(event: AuthEvent) {
