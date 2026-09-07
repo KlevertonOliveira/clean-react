@@ -1,5 +1,6 @@
 import { AccessDeniedError } from "@/domain/errors";
 import {
+  MutationCache,
   QueryCache,
   QueryClient,
 } from '@tanstack/react-query';
@@ -14,10 +15,13 @@ function handleAuthError(error: Error, authEventEmitter: AuthEventEmitter) {
 
 export function createQueryClient(authEventEmitter: AuthEventEmitter) {
   const onError = (error: Error) => handleAuthError(error, authEventEmitter);
+
   const queryCache = new QueryCache({ onError });
+  const mutationCache = new MutationCache({ onError });
 
   return new QueryClient({
     queryCache,
+    mutationCache,
 
     defaultOptions: {
       queries: {
