@@ -18,6 +18,19 @@ describe('RouteAuth', () => {
       expect(getSpy).toHaveBeenCalledTimes(1);
       expect(isAuthenticated).toBeFalsy();
     });
+
+    test("Should return false when account information stored does not have accessToken", () => {
+      const getSpy = (vi
+        .spyOn(currentAccountAdapter, "getCurrentAccountAdapter")
+        // @ts-expect-error Forcing an invalid value as it expects an object in the format of AccountModel
+        .mockReturnValue({ invalidAccount: "invalidAccount" })
+      );
+
+      const isAuthenticated = routeAuth.isAuthenticated();
+
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(isAuthenticated).toBeFalsy();
+    });
   });
 
   describe('logout', () => {
