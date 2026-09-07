@@ -7,34 +7,51 @@ describe('RouteAuth', () => {
     vi.resetAllMocks();
   });
 
-  test("Should call setCurrentAccountAdapter with null when logout is called", () => {
-    const setSpy = vi.spyOn(currentAccountAdapter, "setCurrentAccountAdapter");
+  describe('isAuthenticated', () => {
+    test("Should return false when no account information is stored", () => {
+      const getSpy = (vi
+        .spyOn(currentAccountAdapter, "getCurrentAccountAdapter")
+      );
 
-    routeAuth.logout();
+      const isAuthenticated = routeAuth.isAuthenticated();
 
-    expect(setSpy).toHaveBeenCalledTimes(1);
-    expect(setSpy).toHaveBeenCalledWith(null);
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(isAuthenticated).toBeFalsy();
+    });
   });
 
-  test("Should get correct account information when getAccount is called", () => {
-    const account = mockAccountModel();
-    const getSpy = (vi
-      .spyOn(currentAccountAdapter, "getCurrentAccountAdapter")
-      .mockReturnValue(account)
-    );
+  describe('logout', () => {
+    test("Should call setCurrentAccountAdapter with null when logout is called", () => {
+      const setSpy = vi.spyOn(currentAccountAdapter, "setCurrentAccountAdapter");
 
-    const result = routeAuth.getAccount();
+      routeAuth.logout();
 
-    expect(getSpy).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(account);
+      expect(setSpy).toHaveBeenCalledTimes(1);
+      expect(setSpy).toHaveBeenCalledWith(null);
+    });
   });
 
-  test("Should return null when no account value is stored", () => {
-    const getSpy = vi.spyOn(currentAccountAdapter, "getCurrentAccountAdapter");
+  describe('getAccount', () => {
+    test("Should get correct account information when getAccount is called", () => {
+      const account = mockAccountModel();
+      const getSpy = (vi
+        .spyOn(currentAccountAdapter, "getCurrentAccountAdapter")
+        .mockReturnValue(account)
+      );
 
-    const result = routeAuth.getAccount();
+      const result = routeAuth.getAccount();
 
-    expect(getSpy).toHaveBeenCalledTimes(1);
-    expect(result).toBeNull();
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(account);
+    });
+
+    test("Should return null when no account value is stored", () => {
+      const getSpy = vi.spyOn(currentAccountAdapter, "getCurrentAccountAdapter");
+
+      const result = routeAuth.getAccount();
+
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(result).toBeNull();
+    });
   });
 });
