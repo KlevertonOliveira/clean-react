@@ -23,7 +23,7 @@ describe('LocalUpdateCurrentAccount', () => {
     await sut.save(account);
 
     expect(setStorageMock.key).toBe('account');
-    expect(setStorageMock.value).toBe(JSON.stringify(account));
+    expect(setStorageMock.value).toBe(account);
   });
 
   test('Should throw if SetStorage throws', async () => {
