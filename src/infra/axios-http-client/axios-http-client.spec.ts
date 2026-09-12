@@ -46,9 +46,7 @@ describe('AxiosHttpClient', () => {
       const { sut, mockedAxios } = makeSut();
 
       mockedAxios.post.mockRejectedValueOnce({
-        request: {
-          response: mockHttpResponse()
-        }
+        response: mockHttpResponse()
       });
 
       const promise = sut.post(mockPostRequest());
@@ -82,9 +80,7 @@ describe('AxiosHttpClient', () => {
       const { sut, mockedAxios } = makeSut();
 
       mockedAxios.get.mockRejectedValueOnce({
-        request: {
-          response: mockHttpResponse()
-        }
+        response: mockHttpResponse()
       });
 
       const promise = sut.get(mockGetRequest());
