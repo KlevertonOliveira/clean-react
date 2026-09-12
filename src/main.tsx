@@ -12,6 +12,13 @@ const authEventEmitter = createAuthEventEmitter();
 const queryClient = createQueryClient(authEventEmitter);
 const router = createAppRouter();
 
+// Register the router type for maximum type safety
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
+
 setupAuthNavigation({
   router,
   onLogout: routeAuth.logout,
